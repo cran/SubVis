@@ -1,0 +1,17 @@
+7def07a3e7af2b471fd0fb059995c4ff *DESCRIPTION
+f456588f66650d1861ba24c6b340b4d1 *NAMESPACE
+1fad7da3a9465aed654bcb5847369371 *R/startSubVis.R
+760a400872436a1a5f643e0c91059ec3 *build/vignette.rds
+25bb98458fc1d5ad2aaacd9551ea21e6 *inst/SubVisApp/js/SubVisDraw.js
+f4ded09cb685a0bf45826a3ab2741dba *inst/SubVisApp/js/SubVisEvents.js
+208ab022e9c001e3a0df8ac373cf92f7 *inst/SubVisApp/js/SubVisGetDecide.js
+c5f3a74c0267c4c6ba6393ce15913576 *inst/SubVisApp/js/SubVisGlobals.js
+37c456e093b39d6613ec6021db00aef4 *inst/SubVisApp/server.R
+953dcfebeb788a2c911fb0c0e289d362 *inst/SubVisApp/ui.R
+c6d77fa8e480d6c2ffafab08bf288aa8 *inst/doc/SubVis.Rmd
+30bfbb7c696f540934390031c56a5e02 *inst/doc/SubVis.html
+90c061f11eb200d1943394dd426d8cea *inst/extdata/Example_FASTA_files/gpr12.fasta
+f56e300a8a623d1489966f3bcc7bba92 *inst/extdata/Example_FASTA_files/gpr6.fasta
+9a8e0e32c23139bcdb3b0b87f301b977 *inst/extdata/Example_custom_matrix/gpcrtm.txt
+d8c1086f2faea0169d26543c795d9b11 *man/startSubVis.Rd
+c6d77fa8e480d6c2ffafab08bf288aa8 *vignettes/SubVis.Rmd
