@@ -13,24 +13,24 @@ vignette: >
 
     Software tool for visual analysis of substitution matrix effects on pairwise protein sequence     alignment.  Utilizes Shiny for interface components, R for alignment processing, and              JavaScript for visualization.
     
-###   Project Pages:
+###   Other Project Pages:
 
-      1.  https://github.com/sabarlowe/SubVis (includes instructional video)
-      2.  https://cran.r-project.org/
+      1.  https://github.com/sabarlowe/SubVis
 
 ###   Known Issues:
 
-      1.  Zooming and Text - In the detail view, some text representing substitutions and scores
-          becomes unaligned with the corresponding matrix type with zooming.
+      None
 
 ###   Included Data (inst\\extdata\\Example_custom_matrix and inst\\extdata\\Example_FASTA_files)
 
       1.  Two protein sequences in FASTA format (gpr12.fasta, gpr6.fasta)
       2.  A custom matrix developed by Rios et al. (gpcrtm.txt)
 
-###   Getting started:
+###   Getting started 
 
-    1.  Install R Studio (R version  version 3.3.0 or later).
+    (Requires availability of a web browser):
+
+    1.  Install R version >= 3.3.0
   
     2.  Install required R packages (and any dependencies):
   
@@ -40,8 +40,7 @@ vignette: >
   
     3.  Install and load SubVis package
   
-    4.  From a RStudio command line lauch 
-        the SubVis application with
+    4.  Launch the SubVis application with
     
           '> startSubVis()'
 
@@ -67,6 +66,8 @@ vignette: >
           First col --> Transpose of first row starting at row 2
         
         All other entries are substitution values.
+        
+        In the display, the custom matrix is labeled "CUST".
         
     
     4.  The extension penalty, gap penalty, and score 
@@ -98,7 +99,7 @@ vignette: >
     Interaction:  Size
     
       1.  '+' enlarges the display and '-' shrinks the 
-          display.
+          display. (See known issues.)
 
 ###       Detail
 
@@ -125,7 +126,7 @@ vignette: >
 
     Interaction: Classification
   
-      1.  Classify amino acids according to minor modification to [1] and
+      1.  Classify amino acids according to [1] and
           whether an amino acid substitution is conserved (log-odds > 0)
           or not (log-odds < 0)
 

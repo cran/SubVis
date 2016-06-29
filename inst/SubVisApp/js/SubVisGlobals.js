@@ -49,7 +49,7 @@ var SPACE_X         = 0;                       // constant for spacing helper in
 var SPACE_Y         = 3;                       // constant for spacing helper in the y direction 
 var LEFT_MARGIN     = 80 + SPACE_X;            // left margin to start drawing 
 var TOP_MARGIN      = RECT_HEIGHT*2 + SPACE_Y; // top margin to start drawing
-var SPACE_BTW_ROWS  = RECT_HEIGHT + SPACE_Y;   // space between rows of alignments
+var SPACE_BTW_ROWS  = RECT_HEIGHT/2 + SPACE_Y;   // space between rows of alignments
 var SPACE_BTW_PAIRS = RECT_HEIGHT;             // space between pairs of rows
 
 /****  Non-constants  ****/
@@ -117,6 +117,7 @@ var startProt    = 0;    // starting sequence
 var pointList    = [];      // array of x, y coordinates corresponding to each alignment component
 var allPointList = []; 
 var scoreList    = [];      // array of score values to list
+var subCrdStore  = [];      // array of substitution display coordinates for mouseover
 var metaList     = null;    // list of meta data
 var paramsList   = null;    // parameter list for scoring
                             // slot one - holds gap penalty

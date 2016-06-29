@@ -165,10 +165,10 @@ shinyUI(navbarPage("SubVis",
                     strong("----------------------------------"),                                                         
                     br(),                                                                                                                                                    
                     div(style="display:inline-block",
-                         textInput("seqGoTo", label = strong("POS"), value = NULL),
+                         textInput("seqGoTo", label = strong("POS (Click GO)"), value = NULL),
                          tags$style(type='text/css', "#seqGoTo { width: 50px; }")
                     ),
-                    radioButtons("search", label = strong("SEARCH"), choices = searchType, selected = 1, inline = FALSE),
+                    radioButtons("search", label = strong("SEARCH (Click GO)"), choices = searchType, selected = 1, inline = FALSE),
                     div(style="display:inline-block",
                          textInput("seqSearch", label = NULL, value = NULL),
                          tags$style(type='text/css', "#seqSearch { width: 50px; }")

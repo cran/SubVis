@@ -12,7 +12,7 @@
 
 <meta name="author" content="Scott Barlowe" />
 
-<meta name="date" content="2016-06-15" />
+<meta name="date" content="2016-06-29" />
 
 <title>SubVis</title>
 
@@ -32,7 +32,7 @@
 
 <h1 class="title toc-ignore">SubVis</h1>
 <h4 class="author"><em>Scott Barlowe</em></h4>
-<h4 class="date"><em>2016-06-15</em></h4>
+<h4 class="date"><em>2016-06-29</em></h4>
 
 
 
@@ -40,15 +40,13 @@
 <h3>Description:</h3>
 <pre><code>Software tool for visual analysis of substitution matrix effects on pairwise protein sequence     alignment.  Utilizes Shiny for interface components, R for alignment processing, and              JavaScript for visualization.</code></pre>
 </div>
-<div id="project-pages" class="section level3">
-<h3>Project Pages:</h3>
-<pre><code>  1.  https://github.com/sabarlowe/SubVis (includes instructional video)
-  2.  https://cran.r-project.org/</code></pre>
+<div id="other-project-pages" class="section level3">
+<h3>Other Project Pages:</h3>
+<pre><code>  1.  https://github.com/sabarlowe/SubVis</code></pre>
 </div>
 <div id="known-issues" class="section level3">
 <h3>Known Issues:</h3>
-<pre><code>  1.  Zooming and Text - In the detail view, some text representing substitutions and scores
-      becomes unaligned with the corresponding matrix type with zooming.</code></pre>
+<pre><code>  None</code></pre>
 </div>
 <div id="included-data-instextdataexample_custom_matrix-and-instextdataexample_fasta_files" class="section level3">
 <h3>Included Data (inst\extdata\Example_custom_matrix and inst\extdata\Example_FASTA_files)</h3>
@@ -56,8 +54,10 @@
   2.  A custom matrix developed by Rios et al. (gpcrtm.txt)</code></pre>
 </div>
 <div id="getting-started" class="section level3">
-<h3>Getting started:</h3>
-<pre><code>1.  Install R Studio (R version  version 3.3.0 or later).
+<h3>Getting started</h3>
+<pre><code>(Requires availability of a web browser):
+
+1.  Install R version &gt;= 3.3.0
 
 2.  Install required R packages (and any dependencies):
 
@@ -67,8 +67,7 @@
 
 3.  Install and load SubVis package
 
-4.  From a RStudio command line lauch 
-    the SubVis application with
+4.  Launch the SubVis application with
 
       '&gt; startSubVis()'</code></pre>
 </div>
@@ -94,6 +93,8 @@
       First col --&gt; Transpose of first row starting at row 2
     
     All other entries are substitution values.
+    
+    In the display, the custom matrix is labeled &quot;CUST&quot;.
     
 
 4.  The extension penalty, gap penalty, and score 
@@ -126,7 +127,7 @@ Interaction:  Mouse move
 Interaction:  Size
 
   1.  '+' enlarges the display and '-' shrinks the 
-      display.</code></pre>
+      display. (See known issues.)</code></pre>
 </div>
 <div id="detail" class="section level3">
 <h3>Detail</h3>
@@ -153,7 +154,7 @@ Interaction:  Mouse over an amino acid.
 
 Interaction: Classification
 
-  1.  Classify amino acids according to minor modification to [1] and
+  1.  Classify amino acids according to [1] and
       whether an amino acid substitution is conserved (log-odds &gt; 0)
       or not (log-odds &lt; 0)
 

@@ -166,6 +166,16 @@ function drawDetail(){
     
   }
   
+  len =  subCrdStore.length;
+   
+  // clear displayed substitution coordinates 
+  for(var i = 0; i < len; i++){
+    
+    subCrdStore.pop();
+    
+  }
+
+  
   // draw alignments in pattern-subject pairs
   if(pairLayout == 0){
      
@@ -734,7 +744,7 @@ function drawPairLayout(i){
                     alignments[i + MATRIX_SLOT]);
 
   curX = LEFT_MARGIN;
-  curY = curY + SPACE_BTW_ROWS ;
+  curY = curY + RECT_HEIGHT + SPACE_BTW_ROWS;
   
   drawProtAlignment(alignments[i + PATT_SLOT], alignments[i + SUBJ_SLOT], 
                     alignments[i + SUBJ_ST_SLOT], 
@@ -763,8 +773,8 @@ function drawTypeLayout(i, pattOrSub){
   var endIndexCurX;
   
   curX = LEFT_MARGIN;
-  curY = curY + RECT_HEIGHT * 1.5;//*2;
-        
+  curY = curY + RECT_HEIGHT * 3;
+  
   if(i == startProt/* && pattOrSub == 0*/){
     
     if(beginMark < 0){
@@ -871,8 +881,8 @@ function drawMouseMove(){
       
       ctx.fillStyle = '#000000';
       ctx.font = "14px Arial";
-      ctx.fillText(" AA: " + pointList[i].abbrev, myCanvasProt.width - 150, 50);
-      ctx.fillText("PO: " + pointList[i].aaNum, myCanvasProt.width - 75, 50);
+      ctx.fillText(" AA: " + pointList[i].abbrev, myCanvasProt.width - 110, 80);
+      ctx.fillText("PO: " + pointList[i].aaNum, myCanvasProt.width - 60, 80);
       checkCol = pointList[i].aaNum - 1;
       tempMatrixType = pointList[i].mat.toString();
     }
@@ -963,21 +973,17 @@ function drawMouseMove(){
     
     drawColAlpha(colAlpha, tempMatrixType);
     drawLogOdds(checkCol, tempMatrixType, 1, 0, 0);
-    if(pairLayout == 0){
-      
-      var probX = 5;
-      var probY = RECT_HEIGHT*3 + RECT_HEIGHT + 100;
+
+    var probX = 5;
+    var probY;
+    var probYCnt = 0; // counter for substitution display coordinates
     
-      for(var i = startProt; i < alignments.length; i += OBJ_OFFSET){
-    
-        drawLogOdds(checkCol, alignments[i + MATRIX_SLOT], 2, probX, probY);
-        probY = probY + RECT_HEIGHT*3 + SPACE_Y;
-        
-      }
+    for(var i = startProt; i < alignments.length; i += OBJ_OFFSET){
+      probY = subCrdStore[probYCnt];
+      drawLogOdds(checkCol, alignments[i + MATRIX_SLOT], 2, probX, probY);
+      probYCnt++;
     }
   }
-   
-  
 }
 
 /*************************************************************
@@ -1089,13 +1095,13 @@ function drawLogOdds(checkCol, tempMatrixType, probLoc, probX, probY){
   ctx.fillStyle = '#000000';
   
   if(probLoc == 1){
-    ctx.fillText("LO: " + logOdds + "  ( " + tempAA1 + " ----> " + tempAA2 + " ) ", 
-                  myCanvasProt.width - 150, 20);
+    ctx.fillText("LO: " + logOdds, myCanvasProt.width - 110, 20);
+    ctx.fillText("SUB: " + tempAA1 + " --> " + tempAA2, myCanvasProt.width - 110, 50); 
   }
   
   if(probLoc == 2){
     ctx.font = "12px Arial";
-  ctx.fillText(logOdds + "  ( " + tempAA1 + " --> " + tempAA2 + " ) ", probX, probY);
+    ctx.fillText(logOdds + "  ( " + tempAA1 + " --> " + tempAA2 + " ) ", probX, probY);
   }  
 }
 
@@ -1536,6 +1542,7 @@ function drawLabels(alignLabel, score){
   ctx.fillText(getMatrixString(alignLabel, 1),5,curY + SPACE_Y);
   ctx.font = "12px Arial";
   ctx.fillText(Math.floor(score), 5, curY + RECT_HEIGHT/2 + SPACE_Y*3);
+  subCrdStore.push(curY + RECT_HEIGHT/2 + SPACE_Y*3 + 15);
 
 }
 
@@ -1550,8 +1557,8 @@ function drawLabels(alignLabel, score){
 function drawLegend(){
   
   var canvasStart  = 10;   // bottom border for legend
-  var legendSize   = 15;   // canvas space allocated for oen amino acid 
-  var leftLegendSt = 300;  // left border for legend
+  var legendSize   = 15;   // canvas space allocated for one amino acid 
+  var leftLegendSt = 250;  // left border for legend
 
   for(var i = 0; i < aList.length; i++){
     

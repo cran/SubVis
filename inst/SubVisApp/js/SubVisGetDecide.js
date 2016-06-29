@@ -205,7 +205,11 @@ function noClassify(sA){
  *              S,T   
  *              D,E   
  *              N,Q   
- *              G,F,P,W,Y  
+ *              G
+ *              F
+ *              P
+ *              W
+ *              Y  
  *              AST,DASH
  *              OTHER (Ex:  X, Z, B, J --> Wildcard Values)
  * 
@@ -248,11 +252,29 @@ function noClassify(sA){
     ctx.fillStyle = '#C4D79B';
 
   }
-  else if(sA == 'G' || sA == 'F' || 
-          sA == 'P' || sA == 'W' || 
-          sA == 'Y'){
+  else if(sA == 'G'){
       
     ctx.fillStyle = '#FABF8F';
+
+  }
+  else if(sA == 'F'){
+      
+    ctx.fillStyle = '#ff3333';
+
+  }
+  else if(sA == 'P'){
+      
+    ctx.fillStyle = '#33cc33';
+
+  }
+  else if(sA == 'W'){
+      
+    ctx.fillStyle = '#ffcc00';
+
+  }
+  else if(sA == 'Y'){
+      
+    ctx.fillStyle = '#00ffff';
 
   }
   else if(sA == '*' || sA == '-'){
@@ -274,9 +296,13 @@ function noClassify(sA){
   aList.push({cat:['S', 'T'], color: '#4F81BD'});
   aList.push({cat:['D', 'E'], color: '#963634'});  
   aList.push({cat:['N', 'Q'], color: '#C4D79B'});  
-  aList.push({cat:['G', 'F', 'P', 'W', 'Y'], color: '#FABF8F'});
-  
-}
+  aList.push({cat:['G'], color: '#FABF8F'});
+  aList.push({cat:['F'], color: '#ff3333'});
+  aList.push({cat:['P'], color: '#33cc33'});
+  aList.push({cat:['W'], color: '#ffcc00'});
+  aList.push({cat:['Y'], color: '#00ffff'});
+   
+ }
 
 /*************************************************************
  * Name: getHydroColor
