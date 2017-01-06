@@ -1,0 +1,6 @@
+falcNuc.txt -3.2 -0.1
+falcNuc.txt -10 -0.6
+falcNuc.txt -7.5 -0.9
+BLS.txt -3.2 -0.1
+BLS.txt -10 -0.6
+BLS.txt -7.5 -0.9

@@ -1,6 +1,6 @@
 ---
 title: "SubVis"
-author: "Scott Barlowe"
+author: "Scott Barlowe, Heather Coan, and Robert Youker"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -8,195 +8,416 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+[About](#abt)
 
-###   Description:
+[Description](#descr)
 
-    Software tool for visual analysis of substitution matrix effects on pairwise protein sequence     alignment.  Utilizes Shiny for interface components, R for alignment processing, and              JavaScript for visualization.
+[Other Project Pages](#other)
+
+[Known Issues](#issues)
+
+[Included Data](#data)
+
+[Getting Started](#start)
+
+[Options Tab](#options)
+
+[VIZ Tab: Overview](#over)
+
+[VIZ Tab: Detail](#detail)
+
+[VIZ Tab: Search](#srch)
+
+[Error Messages](#error)
+
+[Notes](#note)
+
+[References](#ref)
+
+###   <a id="abt"></a>About:
+
+      Subvis version 2.0.0
+      Scott Barlowe, Heather Coan, and Robert Youker
+      Western Carolina University
+      Uses: R (>= 3.3.0), JavaScript
+      Licensing:  GNU General Purpose License            
+
+###   <a id="descr"></a>Description:
+
+      Software tool for visual analysis of substitution matrix 
+      effects on pairwise protein sequence alignment.  Utilizes 
+      Shiny for interface components, R for alignment processing, 
+      and JavaScript for visualization.
     
-###   Other Project Pages:
+###   <a id="other"></a>Other Project Pages:
 
       1.  https://github.com/sabarlowe/SubVis
 
-###   Known Issues:
+###   <a id="issues"></a>Known Issues:
 
       None
 
-###   Included Data (inst\\extdata\\Example_custom_matrix and inst\\extdata\\Example_FASTA_files)
+###   <a id="data"></a>Included Data:
 
-      1.  Two protein sequences in FASTA format (gpr12.fasta, gpr6.fasta)
+      Location:  (extdata/Example_custom_matrix and 
+                  extdata/Example_FASTA_files)
+
+      1.  Four protein sequences in FASTA format 
+            (gpr12.fasta, gpr6.fasta)
+            (Human.fasta, Xenla.fasta)
+            (fNucl.fasta, pFalc.fasta)
       2.  A custom matrix developed by Rios et al. (gpcrtm.txt)
+          A scaled and scaled adjusted matrix reported by 
+            Yu and Altschul (scaled_BLSM.txt, scaled_adj_BLSM.txt)
+          The DISORDER matrix proposed by Radivojac et al. 
+            (disorder.txt)
+      3.  BLOSUM62 matrix used for varying penalties (BLS.txt)
+      4.  Three custom master files (masterFile_gpcrtm.txt, 
+          masterFile_scaled_adj_bls.txt, and falcNuc.txt) listing 
+          the file names of custom matrices and their associated 
+          gap and extension costs
 
-###   Getting started 
+###   <a id="start"></a>Getting Started: 
 
-    (Requires availability of a web browser):
+      (Requires availability of a web browser):
 
-    1.  Install R version >= 3.3.0
+      1.  Install R version >= 3.3.0
   
-    2.  Install required R packages (and any dependencies):
+      2.  Install required R packages (and any dependencies):
   
           'shiny' 
         
           'Biostrings'
   
-    3.  Install and load SubVis package
+      3.  Install and load SubVis package
   
-    4.  Launch the SubVis application with
+      4.  Launch the SubVis at the RStudio prompt with
     
-          '> startSubVis()'
+            '> SubVis::startSubVis()'
+          
+      NOTE:   ENTERING SEQUENCE TEXT (INSTEAD OF FILE UPLOAD)
+              AND USING CUSTOM MATRICES REQUIRES READ/WRITE
+              PERMISSIONS IN THE SUBVIS INSTALLATION DIRECTORY
 
-###   Main tabs:  Options and Viz
+###   Main tabs:  Options, Viz, and Help:
 
-    After launching, there are two main tabs:  Options and Viz
+      After launching, there are three tabs:  Options, Viz, and 
+                                              Help
 
-###  Options tab: Loading data, matrices, and parameters
+###   <a id="options"></a>Options tab: Loading data, matrices, and parameters:
 
-    1.  Protein sequences (one per file) must be 
-        in FASTA format.  There are two example 
-        FASTA files in the test folder.
-    
-    2.  BLOSUM and PAM matrices can be selected 
-        by checking the appropriate box.
-
-    3.  A custom matrix in the form of the 
-        predefined matrices can be loaded from 
-        a text file.  The basic form is 
+      The Options tab includes the following:
       
-          First row --> Characters representing lookup table.
+      1.  Protein sequences (one per file) must be in FASTA 
+          format.  There are two example FASTA files in the 
+          test folder.
+        
+      2.  Sequences can be loaded by either entering the text
+          (including by copy/pasting) or by file selection.  
+          In the case of text entry, text files with the fasta
+          sequences are created in the extdata/Example_FASTA_files 
+          directory located in the SubVis install directory.  
+          These files can be saved for future use.
+          
+          NOTE:   ENTERING SEQUENCE TEXT (INSTEAD OF FILE UPLOAD) 
+                  REQUIRES READ/WRITE PERMISSIONS IN THE SUBVIS 
+                  INSTALLATION DIRECTORY
+        
+      3.  An error message will be generated if
+            a.  Either textbox or file selection is empty
+            b.  Spaces are in the sequences
+            c.  The header and sequences of both are identical
+            d.  The sequences are identical
+    
+      2.  BLOSUM and PAM matrices can be selected by checking 
+          the appropriate box.  Gaps and extension costs can be
+          changed with the associated text boxes.
+        
+          An error message will be generated if
+            a.  The gap entry is empty or is not a number.
+            b.  The extension entry is empty or is not a number, 
+               
+      3.  A custom matrix in the form of the 
+          predefined matrices can be loaded from 
+          a text file.  The basic form is 
       
-          First col --> Transpose of first row starting at row 2
+            First row --> Characters representing lookup
+                            table.
+            First col --> Transpose of first row starting
+                            at row 2
+            All other entries (intersection of amino acids)
+                            are substitution values
+
+                A    B   C   D   E   F . . .
+            A   
+            B
+            C
+            D
+            E
+            F
+            ...
         
-        All other entries are substitution values.
+          Custom matrices are loaded by selecting a master file.
+          This file lists the names of the files that contain 
+          the custom matrices.  Both files should be located in 
+          extdata/Example_custom_matrix located in the SubVis
+          installation directory.  The format is:
         
-        In the display, the custom matrix is labeled "CUST".
+          custom_matrix_name0 gap_cost0 extension_cost0
+          custom_matrix_name1 gap_cost1 extension_cost1
+          custom_matrix_name2 gap_cost2 extension_cost2
+          
+                    ...and so on...
         
+          Spaces separate the custom matrix name, gap cost, and 
+          extension cost for each matrix.  EACH LINE MUST END 
+          WITH A NEWLINE CHARACTER TO AVOID ERRORS/WARNINGS.  
+          THIS INCLUDES THE LAST LINE LISTING A CUSTOM MATRIX.
+        
+          In the display, the custom matrix is labeled "CM" 
+          followed by the order in which they are listed in the 
+          custom matrix master file (For example, CM0, CM1, etc.)
+        
+          An error message will be generated if
+            a.  The custom matrix radio box is set to "ON" and the 
+                file selection is empty
+            b.  The format of the custom matrix is not acceptable 
+            
+          NOTE:   USING CUSTOM MATRICES REQUIRES READ/WRITE
+                  PERMISSIONS IN THE SUBVIS INSTALLATION DIRECTORY
     
-    4.  The extension penalty, gap penalty, and score 
-        type can be selected by text boxes and a drop-down 
-        menu.
+      4.  The score type can be selected by text boxes and a drop-down 
+          menu
+        
+      5.  After all parameters are entered, clicking the "GO" button 
+          located under the "PERFORM ALIGNMENT" label will changed 
+          the view to the Overview visualization
 
-    Note: Each time a change in the options tab is made, 
-          the GO button (in the Overview or detail view) 
-          must be clicked.
+      Note: Each time a change in the options tab is made, 
+            the GO button (in the Overview or detail view) 
+            must be clicked
     
-###    Viz tab: Overview and Detail view
+###   Viz tab: Overview, Detail view, and Search:
 
-###       Overview
+      There are three options that can be selected with a drop-down 
+      box:  Overview, Detail view, and Search
 
-    Each row (except the last) represents a percent identity 
-    type.  Within each row, the pid for the selected matrices 
-    are sorted.  The last row is the sorted overall score.  
+###   <a id="over"></a>Overview:
 
-    Interaction:  Display initiation
+      Each row (except the last) represents a percent identity 
+      type.  Within each row, the pid for the selected matrices 
+      are sorted.  The last row is the sorted overall score.  
+    
+      All PID colors are normalized together.  The score colors 
+      are normalized separate from the PIDs.  A legend in the 
+      bottom left shows the color scheme along with the minimum 
+      and maximum values for the PID and score.
       
-      1.  Click 'Go' to initiate display.
-
-    Interaction:  Mouse move
     
-      1.  When the mouse moves over a matrix type, 
-          the corresponding matrix in the other 
-          rows are identified.
+      Interaction:  Mouse move
+    
+      1.  When the mouse moves over a matrix type, the 
+          corresponding matrix in the other rows are identified.  
+          At the same time, the corresponding detail information 
+          (matrix type, percent identity, and score) are shown 
+          in the bottom right.
 
-    Interaction:  Size
+
+      Interaction:  Size
     
       1.  '+' enlarges the display and '-' shrinks the 
-          display. (See known issues.)
+          display
 
-###       Detail
+###   <a id="detail"></a>Detail View:
 
-    Score is located under the matrix type for 
-    each alignment pair.  Amino acids are represented
-    by a color-coded box.
+      Score is located under the matrix type for each alignment 
+      pair along the left side.  Amino acids are represented by 
+      a color-coded box.
+      
 
-    Interaction:  Size
+      Interaction:  Size
   
-      1.  '+' enlarges the display.
+      1.  '+' enlarges the display
     
-      2.  '-' shrinks the display.
+      2.  '-' shrinks the display
 
-    Interaction:  Mouse over an amino acid.
+      
+      Interaction:  Mouse over an amino acid
   
-      1.  Histogram showing the number of each amino 
-          acid in that column.
+      1.  Histogram showing the number of each amino acid in that 
+          column
     
-      2.  Log-odds score and the amino acid substitution 
-          displayed under the score for each alignment.
+      2.  Log-odds score (or any substitution value entered 
+          into a custom matrix) and the amino acid substitution 
+          displayed under the score for each alignment
     
-      3.  Amino acid, log-odds score, amino acid subsitution 
-          is shown in the top right.
+      3.  Amino acid, log-odds score (or any substitution value 
+          entered into a custom matrix), and the amino acid 
+          subsitution is shown in the top right
+      
+      4.  The gap and extension costs for the selected amino acid 
+          (under the mouse) is shown in the top left
 
-    Interaction: Classification
+      
+      Interaction: Classification
   
-      1.  Classify amino acids according to [1] and
-          whether an amino acid substitution is conserved (log-odds > 0)
-          or not (log-odds < 0)
+      1.  Classify amino acids according to [1] and whether an 
+          amino acid substitution is conserved (log-odds > 0)
+          or not (log-odds < 0).  Conservation classification
+          may not apply depending on substitution value entered
+          into custom matrix.
 
-    Interaction: Nagivation
-  
-      1.  'Start' - Go to position 1.
-  
-      2.  'End' - Go to the end of the maximum alignment.
-  
-      3.  'Pair' - Show both the pattern and subject for each matrix type.
-  
-      4.  'Patt' - Show only the pattern for each matrix type.
-  
-      5.  'Subj' - Show only the subject for each matrix type.
-  
-      6.  'Up' - Scroll up if all matrix types will not fit onto display space.
-  
-      7.  'Dn' - Scroll down if all matrix types will not fit onto display space.
-  
-      8.  '<-' - Go backward in the alignment.
-  
-      9.  '->' - Go forward in the alignment.
-  
-      10. 'Alpha' - Show amino acid instead of boxes
-  
-      11. 'Pos' - Go to a position by entering column in text box. (Requires clicking 'Go')
+      
+      Interaction:  Amino Acid Representation
+      
+      1.  'Alpha On/Off' - Show amino acid instead of boxes
 
-    Interaction: Search (All require clicking 'Go')
+      
+      Interaction: Nagivation
   
-      1.  'NONE' - No search function on (default).
+      1.  'S' - Go to position 1
+  
+      2.  'E' - Go to the end of the alignment with the maximum 
+                length
+  
+      3.  'U' - Scroll up if all matrix types will not fit onto 
+                display space
+  
+      4.  'D' - Scroll down if all matrix types will not fit 
+                onto display space
+  
+      5.  '<' - Go backward in the alignment
+  
+      6.  '>' - Go forward in the alignment
+  
+      7.  'Pair' - Show both the pattern and subject for each matrix 
+                   type
+  
+      8.  'Patt' - Show only the pattern for each matrix type
+  
+      9.  'Subj' - Show only the subject for each matrix type
+      
+###   <a id="srch"></a>Search:
+
+      Interaction: POS  (Requires clicking 'GO')
     
-      2.  'INDEL' - Shows the insertions and deletions in red.
+      1.  Go to a position by entering column in text box 
+          (Requires clicking 'Go')
+ 
+      
+      Interaction: Search (All require clicking 'Go')
+  
+      1.  'NONE' - No search function on (default)
     
-      3.  'MATCH' - Shows the positions that match in both the pattern and subject.
+      2.  'INDEL' - Shows the insertions and deletions in red
     
-      4.  'SEQ' - The amino acid to be searched for.
+      3.  'MATCH' - Shows the positions that match in both the 
+                    pattern and subject
+    
+      4.  'SEQ' - The amino acid to be searched for
 
-###   Notes:
+###   <a id="error"></a>Error Messages:
 
-    1.  Log-odds score for pairs involving a gap are
-        reported as undefined.
+      Error messages are generated in the following scenarios 
+      under on the top left of the VIZ tab
 
-    2.  Most error checking is delegated to the individual 
-        R and Biostrings functions.  For example, it is the
-        user's responsibility to ensure a valid custom
-        matrix.
+      1.  'ERROR: No Sequence Text':
+              
+              Generated if either sequence text box is empty
+      
+      2.  'ERROR: No Sequence File':       
+              
+              Generated if either sequence file selection is 
+              empty
+              
+      3.  'ERROR: Identical Pattern and Subject:  
+              
+              Generated if the two sequence inputs (header 
+              information and sequences) are identical
+      
+      4.  'ERROR: Identical Sequences':
+              
+              Generated if the two sequences inputs (sequences 
+              only) are the same
+      
+      5.  'ERROR: Non-Custom Gap':
+              
+              Bad gap value for the BLOSUM/PAM matrices 
+              provided (empty value or not a number)
+      
+      6.  'ERROR: Non-Custom Ext':            
+      
+              Bad extension value for the BLOSUM/PAM matrices 
+              provided (empty value or not a number)
+      
+      7.  'ERROR: Bad Sequence or Matrix':         
+      
+              Error in Biostring's pairwiseAlignment function.  
+              Could indicate, among other possibilities, a 
+              poorly constructed sequence not indicated by 
+              another error message or a poorly constructed 
+              custom matrix.
+      
+      8.  'ERROR: No Custom Matrix Selected': 
+      
+              Custom matrix turned on without selecting a custom 
+              matrix master file
+              
+      9.  'ERROR: Custom Gap':
+      
+              Bad gap cost for the custom matrix read from the 
+              custom matrix file (not a number)
+                                          
+      10. 'ERROR: Custom Ext':
+      
+              Bad extension cost for the custom matrix read from the 
+              custom matrix file (not a number)
+              
 
-###   References:
+###   <a id="note"></a>Notes:
 
-    1.  Pages, H., Aboyoun, P., Gentleman, R., DebRoy, S.: Biostrings: String
-        Objects Representing Biological Sequences, and Matching Algorithms.
-        R package version 2.32.0
+      1.  Log-odds score (or any substitution value entered 
+          into a custom matrix) for pairs involving a gap are
+          reported as undefined
 
-    2.  Pearson, W.R., Lipman, D.J.: Improved tools for biological sequence
-        comparison. Proc. Natl. Acad. Sci. USA 85(8), 2444{2448 (1988)
+###   <a id="ref"></a>References:
 
-    3.  Pommie, C., Levadoux, S., Sabatier, R., Lefranc, G., Lefranc, M.: Imgt
-        standardized criteria for statistical analysis of immunoglobulin v-region
-        amino acid properties. Journal of Molecular Recognition 17(1), 17{32
-        (2004)
+      1.  Pages, H., Aboyoun, P., Gentleman, R., DebRoy, S.: 
+          Biostrings: String Objects Representing Biological 
+          Sequences, and Matching Algorithms.  R package version
+          2.32.0
 
-    4.  R Core Team: R: A Language and Environment for Statistical
-        Computing. R Foundation for Statistical Computing, Vienna, Austria
-        (2013). R Foundation for Statistical Computing.
-        http://www.R-project.org/
+      2.  Pearson, W.R., Lipman, D.J.: Improved tools for 
+          biological sequence comparison. Proc. Natl. Acad. Sci.
+          USA 85(8), 2444{2448 (1988)
 
-    5.  RStudio, Inc.: Shiny: Web Application Framework for R. (2014). R
-        package version 0.10.1. http://CRAN.R-project.org/package=shiny
+      3.  Pommie, C., Levadoux, S., Sabatier, R., Lefranc, G., 
+          Lefranc, M.: Imgt standardized criteria for statistical 
+          analysis of immunoglobulin v-region amino acid 
+          properties. Journal of Molecular Recognition 17(1),
+          (2004)
+
+      4.  R Core Team: R: A Language and Environment for 
+          Statistical Computing. R Foundation for Statistical 
+          Computing, Vienna, Austria (2013). R Foundation for 
+          Statistical Computing.  http://www.R-project.org/
+
+      5.  RStudio, Inc.: Shiny: Web Application Framework for R.
+          (2014). R package version 0.10.1. 
+          http://CRAN.R-project.org/package=shiny
         
-    6.  Rios, S., Fernandez, M.F., Caltabiano, G., Campillo, M., Pardo, L.,
-        Gonzalez, A.: Gpcrtm: An amino acid substitution matrix for the
-        transmembrane region of class a g protein-coupled receptors. BMC
-        Bioinformatics 16(206) (2015)
+      6.  Rios, S., Fernandez, M.F., Caltabiano, G., Campillo,
+          M., Pardo, L., Gonzalez, A.: Gpcrtm: An amino acid 
+          substitution matrix for the transmembrane region of 
+          class a g protein-coupled receptors. BMC Bioinformatics
+          16(206). (2015)
+          
+      7.  Yu, Y., Altschul, S.F.: The construction of amino 
+          acid substitution matrices for the comparison of proteins 
+          with non-standard compositions.  Bioinformatics 21(7): 
+          902-911.  (2004)
+
+      8.  Radivojac, P., Obradovic, Z., Brown, C.J., Dunker, A.K.:
+          Improving sequence alignments for intrinsically disordered
+          proteins.  Pacific Symposium on Biocomputing 7:589-600.
+          (2002)

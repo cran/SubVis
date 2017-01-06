@@ -37,8 +37,19 @@ INDEL_SEARCH = 2
 MATCH_SEARCH = 3
 SEQ_SEARCH   = 4
 
-# Global for checking custom matrix status 
+# Globals for checking custom matrix status 
 CUST_ON = 2
+MAX_CHECKED_PLUS_ONE = 11
+
+# Globals for file name, gap costs, and 
+#     extension costs in custom matrix 
+#     master file
+FILE_SPOT = 1
+GAP_SPOT  = 2
+EXT_SPOT  = 3
+
+# Global for error checking
+ERROR_STRING<-""
 
 # Initial load of BLOSUM and PAM matrices
 #   to the workspace
@@ -75,7 +86,7 @@ P_250 <- matrix(PAM250)
 # 
 ###########################################################
 initMat<-function(matrices){
-  
+
   switch(matrices,
          "1"  = data(BLOSUM45),   
          "2"  = data(BLOSUM50),
@@ -114,7 +125,7 @@ getMatString<-function(matrices){
          "9"  =  (matString <- "PAM120"),
          "10" =  (matString <- "PAM250")
   )
-  
+
   return (matString)
   
 }
@@ -135,7 +146,7 @@ getScopeString<-function(alignScore){
           "2" = (scopeString <- "global"),
           "3" = (scopeString <- "overlap"),
           "4" = (scopeString <- "global-local"),
-          "5" = (scopeString <- "local-global"),
+          "5" = (scopeString <- "local-global")
   )
   
   return (scopeString)
@@ -143,7 +154,7 @@ getScopeString<-function(alignScore){
 
 ###########################################################
 # Name: loadCustomMat
-# Loads custom substutition matrix from user.  Format for
+# Loads custom substutition matrix from user
 #
 # @param: pattIn      Pattern alignment
 # @param: subIn       Subject alignment
@@ -177,7 +188,17 @@ loadCustomMat<-function(pattIn, subIn, gapOpen, gapExt, alignScore, tempTable){
 #                            table.
 #              First col --> Transpose of first row starting
 #                            at row 2
-#              All other entries are substitution values
+#              All other entries (intersection of amino acids)
+#                            are substitution values
+#
+#       A    B   C   D   E   F . . .
+#   A   
+#   B
+#   C
+#   D
+#   E
+#   F
+#   ...
 #
 # @param: fI  Input file containing custom matrix
 # 
@@ -185,10 +206,8 @@ loadCustomMat<-function(pattIn, subIn, gapOpen, gapExt, alignScore, tempTable){
 ###########################################################
 readCustomFile<-function(fI){
   
-  tempTable<-read.table(fI$datapath, row.names = 1, 
+  tempTable<-read.table(fI, row.names = 1, 
                        header = TRUE, check.names=FALSE)
-
-  return (tempTable)
 
 }
 
@@ -324,8 +343,7 @@ showIndel<-function(pairList, pairRaw){
 
 ###########################################################
 # Name: calcPID
-# Stores the different percent identities calculated by the
-# pid function from ......
+# Stores the different percent identities 
 #  
 #      index 8  --> PID1
 #      index 9  --> PID2
@@ -343,6 +361,27 @@ calcPID<-function(pairList, pairRaw){
   pairList<-append(pairList, toString(pid(pairRaw, type="PID2")/100)) #slot9
   pairList<-append(pairList, toString(pid(pairRaw, type="PID3")/100)) #slot10
   pairList<-append(pairList, toString(pid(pairRaw, type="PID4")/100)) #slot11
+  
+}
+
+###########################################################
+# Name: addGapExt
+# Adds the costs for sequence gaps and extensions
+#  
+#      index 12  --> Gap
+#      index 13  --> Extension
+#
+# @param: pairList  List to fill with search options
+# @param: gap       Gap cost
+# @param: ext       Extension cost
+#
+# @returns: List loaded as described above
+###########################################################
+addGapExt<-function(pairList, gap, ext){
+  
+  
+    pairList<-append(pairList, gap)  #slot 12
+    pairList<-append(pairList, ext)  #slot 13
   
 }
 
@@ -376,36 +415,68 @@ calculateProtAlignment<-function(matrices, pattIn, subIn, gapOpen, gapExt, align
 
 
 ###########################################################
-# Name: readSeq
+# Name: readSeqFile
 # Reads fasta file 
 #
 # @param: fI input file
 # 
 # @returns:  Amino acid sequence
 ###########################################################
-readSeq<-function(fI){
-    
+readSeqFile<-function(fI){
+
     return (readAAStringSet(fI$datapath, "fasta"))
+}
+
+###########################################################
+# Name: readSeqText
+# Reads fasta file 
+#
+# @param: fI input created from textbox
+# 
+# @returns:  Amino acid sequence
+###########################################################
+readSeqText<-function(fI){
+  
+  return (readAAStringSet(fI, "fasta"))
   
 }
-                      
+
+
 #Server begins
 shinyServer(function(input, output, session) {
+  
+  output$ui <- renderUI({
+  
+  # Dynamic UI for switching between file input and text input  
+  switch(input$input_type,
+         "Textbox" = div(h5(strong("FASTA Pattern (no spaces in seq.)")), tags$textarea(id="patternTextIn", rows=10, cols=40, "Enter or Paste Pattern Text"),
+                         h5(strong("FASTA Subject (no spaces in seq.)")), tags$textarea(id="subjectTextIn", rows=10, cols=40, "Enter or Paste Subject Text")),
+         "File" = div(h5(strong("FASTA Pattern")), fileInput("fileInPat", label ="", multiple = FALSE, accept = NULL),
+                      h5(strong("FASTA Subject")), fileInput("fileInSub", label ="", multiple = FALSE, accept = NULL))
+  )       
+         
+  })      
+  
+  output$input_type_text <- renderText({
+    input$input_type
+  })
+  
+  output$dynamic_value <- renderPrint({
+    str(input$dynamic)
+  })
   
   values<-reactiveValues()
   values$xTemp2<-matrix(1:12, nrow = 3, ncol =4)
 
   goToPos     = 0     # position in the sequence(s) to go to
   searchOn    = 1     # search is turned on
-  custMat     = 1      # load custom matrix
+  custMat     = 1     # load custom matrix
   pattIn      = NULL  # input pattern
   subIn       = NULL  # input subject
 
-  paramList<-list()
-  paramList<-c(-2, -1, "local")   # initialize penalties 
-                                  # and scoring type
+  paramList<-list()   # list for parameters
 
-  origList<-list()
+  origList<-list()    # list for original sequences 
   origList<-append(origList, toString(pattIn)) # initialize pattern storage
   origList<-append(origList, toString(subIn))  # initialize subject storage
   
@@ -442,7 +513,8 @@ shinyServer(function(input, output, session) {
   observe({
     
     input$goButton
-    
+    input$goButtonViz
+
     # if "GO" button is clicked
     # reload data with any changes
     if(input$goButton != 0){
@@ -451,27 +523,104 @@ shinyServer(function(input, output, session) {
         
         searchList<-list()
         pairList <- list()
+
+
+      tryCatch({
         
-        pattIn<-readSeq(input$fileInPat) # read pattern sequence
-        subIn<-readSeq(input$fileInSub)  # read subject sequence
+        # Reads text box and creates files based on sequences
+        # New files are placed in the current working directory
         
-        # iterate through sustution matrices checked
-        for(checked in input$subList){  
+        ERROR_STRING<-""
+        output$errorText<-renderText({ERROR_STRING})
+        
+        if(input$input_type == "Textbox"){
+            pattIn <- input$patternTextIn
+            subIn <- input$subjectTextIn
+
+            if(pattIn == "" || pattIn == ""){
+              ERROR_STRING<-"No Sequence Text"
+              stop()
+            }
+
+            fileToWrite<-file.path(getwd(), "..", "extdata", "Example_FASTA_files", "tempPatt.fasta", fsep = .Platform$file.sep)
+            sink(fileToWrite)
+            cat(pattIn)
+            sink()
+            pattIn<-readSeqText(file.path(fileToWrite)) # read pattern sequence
+
+            fileToWrite<-file.path(getwd(), "..", "extdata", "Example_FASTA_files", "tempSubj.fasta", fsep = .Platform$file.sep)
+            sink(fileToWrite)
+            cat(subIn)
+            sink()
+            subIn<-readSeqText(file.path(fileToWrite))  # read subject sequence
+        }
+        
+        # Reads sequences from files
+        if(input$input_type == "File"){
+          
+          if(length(input$fileInPat) == 0 || length(input$fileInSub) == 0){
+            ERROR_STRING<-"No Sequence File"
+            stop()
+          }
+          
+          pattIn<-readSeqFile(input$fileInPat) # read pattern sequence
+          subIn<-readSeqFile(input$fileInSub)  # read subject sequence
+          
+        }
+
+        # Check if pattern and subject objects for equality
+        if(identical(pattIn, subIn)){
+          ERROR_STRING<-"Identical Pattern and Subject"
+          stop()
+        }
+
+        # Check if pattern and subject have identical strings
+        if(toString(pattIn) == toString(subIn)){
+          ERROR_STRING<-"Identical Sequences"
+          stop()
+        }
+        
+        # Build list of matrices checked
+        #     along with each gap and 
+        #     extension cost
+        subList = list()
+    
+        tmpCnt = 1
+        for(tmpIter in checkBoxIDList){
+          if(eval(parse(text=paste("input$", checkBoxIDList[tmpCnt], sep =""))) == TRUE){
+            subList<-append(subList, toString(tmpCnt))
+            checkGapVal<-append(checkGapVal, eval(parse(text=paste("input$", checkGapList[tmpCnt], sep =""))))
+            checkExtVal<-append(checkExtVal, eval(parse(text=paste("input$", checkExtList[tmpCnt], sep =""))))
+          }
+          tmpCnt = tmpCnt + 1
+        }
+        
+        # Iterate through substitution matrices checked
+        tmpCnt = 1
+        for(checked in subList){
           
           initMat(checked)
-    
-          paramList[[1]] = input$gapOpen     # store gap penalty
-          paramList[[2]] = input$gapExt      # store extension penalty
-          paramList[[3]] = getScopeString(input$alignScore) #store scoring type
+
+          paramList[[1]] = getScopeString(input$alignScore) #store scoring type
+
+          if(is.na(as.numeric(checkGapVal[[tmpCnt]]))){
+              ERROR_STRING<-"Non-Custom Gap"
+              stop()
+          }
+          if(is.na(as.numeric(checkExtVal[[tmpCnt]]))){
+              ERROR_STRING<-"Non-Custom Ext"
+              stop()
+          }
           
-          # calculate alignments and store results
+          #calculate alignments and store results
           pairRaw<-calculateProtAlignment(checked, pattIn, subIn, 
-                                          input$gapOpen, input$gapExt, 
+                                          as.integer(checkGapVal[[tmpCnt]]), 
+                                          as.integer(checkExtVal[[tmpCnt]]), 
                                           input$alignScore)
           
           pairList<-loadPairs(pairList, pairRaw, checked)
           
-          # search is turned off
+          # Search is turned off
           if(input$search == NO_SEARCH){    
             
             searchOn = NO_SEARCH 
@@ -508,56 +657,114 @@ shinyServer(function(input, output, session) {
           
           # calculate percent identity
           pairList<-calcPID(pairList, pairRaw)
+          pairList<-addGapExt(pairList, checkGapVal[[tmpCnt]], checkExtVal[[tmpCnt]])
           
+          tmpCnt = tmpCnt + 1
         }
         
         # Perform calculations and searches with 
-        # custom matrix included (same as above)
+        #      custom matrix(matrices) included (same process as above)
         if(input$custMat == CUST_ON){
           
-            newTable<-readCustomFile(input$fileIn)
+            # Get master file holding custom matrices and store matrix 
+            #      information in a list
+            tempString<-input$fileIn
+            
+            if(length(tempString) == 0){
+              ERROR_STRING<-"No Custom Matrix Selected"
+              stop()
+            }
+            
+            custMasterFile<-file(tempString$datapath, open="r")
+            custMasterList<-readLines(custMasterFile)
+
+            # Parse and process each custom matrix
+            matrixCnt = 0
+            
+            for(i in 1:length(custMasterList)){
+            
+                tF<-strsplit(custMasterList[i], split = "\\s")
+
+                fileToRead<-file.path(getwd(), "..", "extdata", "Example_custom_matrix", tF[[1]][FILE_SPOT], fsep = .Platform$file.sep)
+                
+                # Read file for custom matrix
+                newTable<-readCustomFile(fileToRead)
+
+                if(!as.numeric(tF[[1]][GAP_SPOT])){
+                  ERROR_STRING<-"Custom Gap"
+                  stop()
+                }
+
+                if(!as.numeric(tF[[1]][EXT_SPOT])){
+                  ERROR_STRING<-"Custom Ext"
+                  stop()
+                }
           
-            pairRawCust<-loadCustomMat(pattIn, subIn, input$gapOpen, 
-                                       input$gapExt, input$alignScore, 
-                                       newTable)
+                pairRawCust<-loadCustomMat(pattIn, subIn, 
+                                           as.integer(tF[[1]][GAP_SPOT]), 
+                                           as.integer(tF[[1]][EXT_SPOT]), 
+                                           input$alignScore, newTable)
+
+                pairList<-loadPairs(pairList, pairRawCust, MAX_CHECKED_PLUS_ONE + matrixCnt)
+                
+                # Load custom alphabet and matrix
+                session$sendCustomMessage(type = "LoadCustNames", row.names(newTable))
+                session$sendCustomMessage(type = "LoadCust", unlist(matrix(newTable)))
+                
+                matrixCnt = matrixCnt + 1
+
+                if(input$search == NO_SEARCH){    
+              
+                  searchOn = NO_SEARCH
+                  pairList<-noSearch(pairList)
+              
+                }
             
-            pairList<-loadPairs(pairList, pairRawCust, "-1")
-     
-            # Load custom alphabet and matrix
-            session$sendCustomMessage(type = "LoadCustNames", row.names(newTable))
-            session$sendCustomMessage(type = "LoadCust", unlist(matrix(newTable)))
-                        
-            if(input$search == NO_SEARCH){    
+                if(input$search == INDEL_SEARCH){
               
-              searchOn = NO_SEARCH
-              pairList<-noSearch(pairList)
+                  searchOn = INDEL_SEARCH
+                  pairList<-showIndel(pairList, pairRawCust)
               
-            }
+                }
             
-            if(input$search == INDEL_SEARCH){
+                if(input$search == MATCH_SEARCH){
               
-              searchOn = INDEL_SEARCH
-              pairList<-showIndel(pairList, pairRawCust)
+                  searchOn = MATCH_SEARCH
+                  pairList<-noSearch(pairList)
               
-            }
+                }
             
-            if(input$search == MATCH_SEARCH){
+                if(input$search == SEQ_SEARCH){
               
-              searchOn = MATCH_SEARCH
-              pairList<-noSearch(pairList)
+                  searchOn = SEQ_SEARCH
+                  pairList<-search(pairList, pairRawCust, input$seqSearch) 
               
-            }
+                }
             
-            if(input$search == SEQ_SEARCH){
-              
-              searchOn = SEQ_SEARCH
-              pairList<-search(pairList, pairRawCust, input$seqSearch) 
-              
-            }
+                # Calculate PID for custom matrices
+                pairList<-calcPID(pairList, pairRawCust)
+                
+                # Add gap and extension costs for custom matrix 
+                pairList<-addGapExt(pairList, tF[[1]][GAP_SPOT], tF[[1]][EXT_SPOT])
             
-            pairList<-calcPID(pairList, pairRawCust)
-            
+              }
+              
+        }
+        
+        closeAllConnections() 
+      
+      }, error = function(e){
+        
+          # If an error but error string is empty
+          #   the error must be with the sequence
+          #   format or input matrix format
+          if(ERROR_STRING == ""){
+            ERROR_STRING<-"Bad Sequence or Matrix Input"
           }
+
+          output$errorText<-renderText({paste("ERROR: ", ERROR_STRING, sep = "")})
+
+      })
         
         goToPos  = input$seqGoTo  # retrieve location to go to 
 
@@ -588,7 +795,6 @@ shinyServer(function(input, output, session) {
       session$sendCustomMessage(type = "goToMessage", goToPos)
       session$sendCustomMessage(type = "updateParamHandler", paramList)
       session$sendCustomMessage(type = "myCallbackHandler", pairList)
-  
     }
   })
 
@@ -693,6 +899,11 @@ shinyServer(function(input, output, session) {
     input$overViewOn
     session$sendCustomMessage(type = "overViewMessage", input$overViewOn)  
   })
+  
+  observeEvent(
+    input$goButton,{
+    updateNavbarPage(session, "sv", selected = "VIZ")
+  })
 
   # observe if residues should be classified according to specific properties
   observe({
@@ -700,4 +911,5 @@ shinyServer(function(input, output, session) {
     session$sendCustomMessage(type = "classifyHandler", input$classifyOn)
   })
 
+  
 })

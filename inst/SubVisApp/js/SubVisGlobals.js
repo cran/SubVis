@@ -45,12 +45,15 @@
 
 var RECT_WIDTH      = 15;                      // constant for width of rects for alignment components
 var RECT_HEIGHT     = 15;                      // constant for height of rects for alignment components
+var RECT_WIDTH_LR   = 15;                      // constant for rectangle width lower bound
+var RECT_HEIGHT_LR  = 15;                      // constant for rectangle height lower bound
 var SPACE_X         = 0;                       // constant for spacing helper in the x direction        
 var SPACE_Y         = 3;                       // constant for spacing helper in the y direction 
-var LEFT_MARGIN     = 80 + SPACE_X;            // left margin to start drawing 
+var LEFT_MARGIN     = 90 + SPACE_X;            // left margin to start drawing 
 var TOP_MARGIN      = RECT_HEIGHT*2 + SPACE_Y; // top margin to start drawing
-var SPACE_BTW_ROWS  = RECT_HEIGHT/2 + SPACE_Y;   // space between rows of alignments
-var SPACE_BTW_PAIRS = RECT_HEIGHT;             // space between pairs of rows
+var SPACE_BTW_ROWS  = 0;                       // space between rows of alignments
+var SPACE_BTW_PAIRS = RECT_HEIGHT +            // space between pairs of rows
+                      RECT_HEIGHT/2 + SPACE_Y; 
 
 /****  Non-constants  ****/
 
@@ -84,7 +87,7 @@ var alphaOn           = false;  // toggle for displaying residue abbreviations
 
 /****  Constants  ****/
 
-var OBJ_OFFSET   = 12;   // number of slots per alignment object
+var OBJ_OFFSET   = 14;   // number of slots per alignment object
 var PATT_SLOT    = 0;    // slot zero   - holds string representing pattern string
 var SUBJ_SLOT    = 1;    // slot one    - holds string representing subject string
 var SCR_SLOT     = 2;    // slot two    - holds string representing score
@@ -101,6 +104,8 @@ var PID_1_SLOT   = 8;    // slot eight  - holds PID1
 var PID_2_SLOT   = 9;    // slot nine   - holds PID2
 var PID_3_SLOT   = 10;   // slot ten    - holds PID3
 var PID_4_SLOT   = 11;   // slot eleven - holds PID4
+var GAP_SLOT     = 12;   // slot twelve - holds gap costs for each matrix
+var EXT_SLOT     = 13;   // slot thirteen - holds extention costs for each matrix
 var NUM_OF_PIDS  = 4;    // number of different percent identity calculations 
 
 /****  Non-constants  ****/
@@ -170,8 +175,8 @@ var P40  = null;
 var P70  = null;
 var P120 = null;
 var P250 = null;
-
-var CUST = null;
+var MAX_CHECKED_PLUS_ONE = 11; 
+var CUST = [];
 
 /****  substitution matrix row names ****/
 
@@ -196,5 +201,7 @@ var aList = [];         // list for storing the color and amino acid
                         //    in the detail view.
 var searchOn      = 1;  // search options (none to start)
 var classifyAllOn = 1;  // classification of detail view (raw to start)
+
+var ERROR_STR = ""      // string for printing error message in VIZ tabs 
 
 </script>

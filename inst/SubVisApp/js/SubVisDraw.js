@@ -52,18 +52,18 @@ function clearCanvas(){
  * *********************************************************/
 function chooseDraw(){
   
-  if(overviewOn == true){
+  if(overviewOn === true){
   
     drawOverview();
   
   }
   
-  if(overviewOn == false){
+  if(overviewOn === false){
     
     drawDetail();
     
   }
-    
+
 }
 
 /*************************************************************
@@ -94,12 +94,14 @@ function drawOverview(){
   mouseMoveOverviewPID();  // check mouse coordinates to check current
                            // PID selection
   
-  if(isOn == false){
+  if(isOn === false){
     
       mouseMoveOverviewSCR();  // check mouse coordinates to check current
                                // score selection
   }
 
+
+  drawOverviewLegend(min, max);
 
 }
 
@@ -126,7 +128,7 @@ function getNormalAll(minOrMax){
     
     for(var j = 0; j < pointList.length; j++){
   
-      if(pointList[j].percIdent > norm && minOrMax == 0){
+      if(pointList[j].percIdent > norm && minOrMax === 0){
       
         norm = pointList[j].percIdent; 
       
@@ -144,6 +146,40 @@ function getNormalAll(minOrMax){
   
   return norm;
   
+}
+
+/*************************************************************
+ * Name: drawOverviewLegend
+ * 
+ * Draws legend for color in overview  
+ * 
+ *  @param: min   Used to normalize color
+ *  @param: max   Used to normalize color
+ * 
+ * *********************************************************/
+function drawOverviewLegend(min, max){
+  
+  var range;
+  
+  // find range for normalization
+  if(min == max){
+    range = 1;
+  }
+  else{
+    range = max-min;
+  }
+  
+  var legGrad = ctx.createLinearGradient(0,0,200,0);
+  legGrad.addColorStop(0,"blue");
+  legGrad.addColorStop(1,"red");
+  ctx.fillStyle = legGrad;
+  ctx.fillRect(10, myCanvasProt.height - 40,210, 15);
+  ctx.fillStyle = '#000000';
+  ctx.font = "14px Arial";
+  ctx.fillText(Math.round(min), 10, myCanvasProt.height - 45);
+  ctx.fillText("PID", 105, myCanvasProt.height - 45);
+  ctx.fillText(Math.round(max), 205, myCanvasProt.height - 45);
+
 }
 
 /*************************************************************
@@ -177,7 +213,7 @@ function drawDetail(){
 
   
   // draw alignments in pattern-subject pairs
-  if(pairLayout == 0){
+  if(pairLayout === 0){
      
     for(var i = startProt; i < alignments.length; i+=OBJ_OFFSET){
         
@@ -188,8 +224,7 @@ function drawDetail(){
     // display meta information
     drawMetaText();
        
-    }
-   
+  }
   else{
      
     // draw pattern only 
@@ -277,7 +312,7 @@ function drawScore(){
   ctx.font = "14px Arial";
   ctx.fillText("Score", 10, lastCurY + RECT_HEIGHT*3 + RECT_HEIGHT);
   
-  curX = LEFT_MARGIN + 10;
+  curX = LEFT_MARGIN;
   curY = lastCurY + RECT_HEIGHT*3;
   
   for(var i = 0; i < scoreList.length; i++){
@@ -288,17 +323,17 @@ function drawScore(){
     ctx.beginPath();
     ctx.moveTo(curX, curY);
     ctx.lineTo(curX, curY + RECT_HEIGHT);
-    ctx.lineTo(curX + RECT_WIDTH*4, curY + RECT_HEIGHT);
-    ctx.lineTo(curX + RECT_WIDTH*4, curY);
+    ctx.lineTo(curX + RECT_WIDTH*3, curY + RECT_HEIGHT);
+    ctx.lineTo(curX + RECT_WIDTH*3, curY);
     ctx.lineTo(curX, curY);
 
     var num = (((scoreList[i].alignScore - min)*1.0)/(range))*255.0;   // normalize
-    num = Math.floor(num);
+    num = Math.round(num);
     
     var temp = "";
     var temp2 = null;
     
-    if(isOn == true){
+    if(isOn === true){
       
       if(currentMatrixLabel == scoreList[i].matrixType.toString()){
         
@@ -332,9 +367,16 @@ function drawScore(){
     scoreList[i].x = curX;
     scoreList[i].y = curY;
 
-    curX = curX + RECT_WIDTH*4;
+    curX = curX + RECT_WIDTH*3;
   
   }
+  
+  // Draw score on overview legend
+  ctx.fillStyle = '#000000';
+  ctx.font = "14px Arial";
+  ctx.fillText(Math.round(min), 10, myCanvasProt.height - 10);
+  ctx.fillText("SCORE", 90, myCanvasProt.height - 10);
+  ctx.fillText(Math.round(max), 190, myCanvasProt.height - 10);
   
 }
 
@@ -358,8 +400,7 @@ function drawPercIdent(pointListIndex, min, max){
   
   var range;
   
-  //find max for normalization
-  //find min for normalization
+  //find range for normalization
   if(min == max){
     range = 1;
   }
@@ -372,7 +413,7 @@ function drawPercIdent(pointListIndex, min, max){
   ctx.font = "14px Arial";
 
   var tempText = "PID ";
-  ctx.fillText(tempText.concat(pointList[0].pid), 10, 
+  ctx.fillText(tempText.concat(Math.round(pointList[0].pid)), 10, 
                pointList[0].y + RECT_HEIGHT);
   
   for(var i = 0; i < pointList.length; i++){
@@ -386,17 +427,17 @@ function drawPercIdent(pointListIndex, min, max){
     ctx.beginPath();
     ctx.moveTo(curX, curY);
     ctx.lineTo(curX, curY + RECT_HEIGHT);
-    ctx.lineTo(curX + RECT_WIDTH*4, curY + RECT_HEIGHT);
-    ctx.lineTo(curX + RECT_WIDTH*4, curY);
+    ctx.lineTo(curX + RECT_WIDTH*3, curY + RECT_HEIGHT);
+    ctx.lineTo(curX + RECT_WIDTH*3, curY);
     ctx.lineTo(curX, curY);
 
     var num = (((pointList[i].percIdent - min)*1.0)/(range))*255.0;   // normalize
-    num = Math.floor(num);
+    num = Math.round(num);
     
     var temp = "";
     var temp2 = null;
     
-    if(isOn == true){
+    if(isOn === true){
       
       if(currentMatrixLabel == pointList[i].matrixType.toString()){
         
@@ -450,27 +491,25 @@ function setPercIdentAll(){
   for(var i = 0; i < NUM_OF_PIDS; i++){
 
     pointList = [];
-    
-    //classification = i;
-    
+
     for(var j = 0; j < alignments.length; j+=OBJ_OFFSET){
     
       var percId = parseFloat(alignments[j + PID_1_SLOT + i]);
       
       pointList.push({x: 0, y: 0, matrixType: alignments[j+MATRIX_SLOT], 
-                      pid: i.toString(), percIdent: Math.floor(percId*100)});
+                      pid: (i+1).toString(), percIdent: Math.round(percId*100)});
 
     }
 
     pointList.sort(function(a,b){return a.percIdent - b.percIdent});
 
-    curX = LEFT_MARGIN + 10;
+    curX = LEFT_MARGIN;
 
     for(var j = 0; j < pointList.length; j++){
     
       pointList[j].x = curX;
       pointList[j].y = curY;
-      curX += RECT_WIDTH*4;    
+      curX += RECT_WIDTH*3;    
 
     }
     
@@ -503,7 +542,7 @@ function mouseMoveOverviewPID(){
     
     for(var i = 0; i < pointList.length; i++){
     
-      if(mouseX > pointList[i].x && mouseX < pointList[i].x + RECT_WIDTH*4 &&
+      if(mouseX > pointList[i].x && mouseX < pointList[i].x + RECT_WIDTH*3 &&
          mouseY > pointList[i].y && mouseY < pointList[i].y + RECT_HEIGHT){
       
         ctx.fillStyle = '#000000';
@@ -526,13 +565,13 @@ function mouseMoveOverviewPID(){
         }
       
         ctx.fillText("Type: " + matString, myCanvasProt.width - 150, 
-                     myCanvasProt.height - 80);
+                     myCanvasProt.height - 70);
                    
         ctx.fillText("Perc Iden: " + pointList[i].percIdent, 
-                     myCanvasProt.width - 150, myCanvasProt.height - 50);
+                     myCanvasProt.width - 150, myCanvasProt.height - 40);
                    
-        ctx.fillText("Score: " + scoreList[scoreMatInd].alignScore.toString(),
-                     myCanvasProt.width - 150, myCanvasProt.height - 20);
+        ctx.fillText("Score: " + Math.round(scoreList[scoreMatInd].alignScore).toString(),
+                     myCanvasProt.width - 150, myCanvasProt.height - 10);
         
       }
     
@@ -540,7 +579,7 @@ function mouseMoveOverviewPID(){
   
   }
 
-  if(isOn == true){
+  if(isOn === true){
     
     isOnAllPointsList(tempMatrixType);
   }
@@ -574,8 +613,8 @@ function isOnAllPointsList(tempMatrixType){
         ctx.beginPath();
         ctx.moveTo(curX, curY);
         ctx.lineTo(curX, curY + RECT_HEIGHT);
-        ctx.lineTo(curX + RECT_WIDTH*4, curY + RECT_HEIGHT);
-        ctx.lineTo(curX + RECT_WIDTH*4, curY);
+        ctx.lineTo(curX + RECT_WIDTH*3, curY + RECT_HEIGHT);
+        ctx.lineTo(curX + RECT_WIDTH*3, curY);
         ctx.lineTo(curX, curY);
         ctx.stroke();
         ctx.closePath();
@@ -601,7 +640,7 @@ function mouseMoveOverviewSCR(){
 
   for(var i = 0; i < scoreList.length; i++){
     
-    if(mouseX > scoreList[i].x && mouseX < scoreList[i].x + RECT_WIDTH*4 &&
+    if(mouseX > scoreList[i].x && mouseX < scoreList[i].x + RECT_WIDTH*3 &&
        mouseY > scoreList[i].y && mouseY < scoreList[i].y + RECT_HEIGHT){
       
       ctx.fillStyle = '#000000';
@@ -624,19 +663,19 @@ function mouseMoveOverviewSCR(){
       }
       
       ctx.fillText("Type: " + matString, myCanvasProt.width - 150,  
-                   myCanvasProt.height - 80);
+                   myCanvasProt.height - 70);
                    
       ctx.fillText("Perc Iden: " + pointList[pointMatInd].percIdent, 
-                   myCanvasProt.width - 150, myCanvasProt.height - 50);
+                   myCanvasProt.width - 150, myCanvasProt.height - 40);
                    
-      ctx.fillText("Score: " + scoreList[i].alignScore.toString(), 
-                   myCanvasProt.width - 150, myCanvasProt.height - 20);
+      ctx.fillText("Score: " + Math.round(scoreList[i].alignScore).toString(), 
+                   myCanvasProt.width - 150, myCanvasProt.height - 10);
                    
     }
     
   }
 
-  if(isOn == true){
+  if(isOn === true){
         
         isOnScoreList(tempMatrixType);
   }
@@ -666,8 +705,8 @@ function isOnScoreList(tempMatrixType){
       ctx.beginPath();
       ctx.moveTo(curX, curY);
       ctx.lineTo(curX, curY + RECT_HEIGHT);
-      ctx.lineTo(curX + RECT_WIDTH*4, curY + RECT_HEIGHT);
-      ctx.lineTo(curX + RECT_WIDTH*4, curY);
+      ctx.lineTo(curX + RECT_WIDTH*3, curY + RECT_HEIGHT);
+      ctx.lineTo(curX + RECT_WIDTH*3, curY);
       ctx.lineTo(curX, curY);
       ctx.stroke();
       ctx.closePath();
@@ -685,17 +724,9 @@ function isOnScoreList(tempMatrixType){
  * 
  * *********************************************************/
 function drawMetaText(){
-  
-  ctx.fillStyle = '#000000';
-    
-  ctx.font = "12px Arial";
-  ctx.fillText("Gap: ", 10, 20);
-  ctx.fillText("Ext: ", 10, 40);
-  ctx.fillText("Scope: ", 10, 60);
 
-  ctx.fillText(paramsList[0], 50, 20);   // gap penalty
-  ctx.fillText(paramsList[1], 50, 40);   // ext. penalty
-  ctx.fillText(paramsList[2], 50, 60);   // scoring scheme
+  ctx.fillStyle = '#000000';
+  ctx.font = "12px Arial";
     
   ctx.fillText("Pattern: ", 10, 80);
   ctx.fillText("Subject: ", 10, 100);
@@ -881,10 +912,16 @@ function drawMouseMove(){
       
       ctx.fillStyle = '#000000';
       ctx.font = "14px Arial";
-      ctx.fillText(" AA: " + pointList[i].abbrev, myCanvasProt.width - 110, 80);
+
       ctx.fillText("PO: " + pointList[i].aaNum, myCanvasProt.width - 60, 80);
       checkCol = pointList[i].aaNum - 1;
       tempMatrixType = pointList[i].mat.toString();
+      
+      // check to see if on the sequence but past the alignment length      
+      if(pointList[i].abbrev != null){
+        ctx.fillText(" AA: " + pointList[i].abbrev, myCanvasProt.width - 110, 80);
+      }
+      
     }
     
   }
@@ -1030,35 +1067,44 @@ function drawLogOdds(checkCol, tempMatrixType, probLoc, probX, probY){
   
   var tempAlign1 = alignments[alignIndex + PATT_SLOT];
   var tempAlign2 = alignments[alignIndex + SUBJ_SLOT];
-  
-  // Find the selected amino acid
-  
-  var tempAA1 = tempAlign1[checkCol];
-  var tempAA2 = tempAlign2[checkCol];
-  
+
   // Handle LO for gaps 
   // (Possible:  Substitute wildcard for gaps)
   
   var skipLO = false;
   var logOdds = "undef";
+ 
+  var tempAA1;      // Amino acid to search for in matrix  (along "x" axis)
+  var tempAA2;      // Amino acid to search for in matrix  (along "y" axis)
+  var dne = false;  // Toggle for does not exist in matrix (past alignment length)
   
-  if(tempAA1 == "-"){
-    
-    //tempAA1 = "*";  Possibly substitute wildcard
+  if(checkCol >= tempAlign1.length || checkCol >= tempAlign2.length){
+  
     skipLO = true;
+    dne = true;
+  
+  }
+
+  else{
+    tempAA1 = tempAlign1[checkCol];
+    tempAA2 = tempAlign2[checkCol];
+  }
+
+  if(tempAA1 == "-"){
+
+    skipLO = true;  // Possibly substitute wildcard
     
   }
   
   if(tempAA2 == "-"){
-    
-    //tempAA2 = "*";  Possibly substitute wildcard
-    skipLO = true;
+
+    skipLO = true;  // Possibly substitute wildcard
     
   }
   
   // Get matrix alphabet
   if(skipLO == false){
-  
+
     var tempName1 = getMatrixString(tempMatrixType, 4);
     var tempName2 = getMatrixString(tempMatrixType, 4);
   
@@ -1066,7 +1112,6 @@ function drawLogOdds(checkCol, tempMatrixType, probLoc, probX, probY){
     var tempInd2  = null;
   
   // Finds index of each amino acid in the pair
-  
     for(var i = 0; i < tempName1.length; i++){
     
       if(tempAA1 == tempName1[i]){
@@ -1088,21 +1133,37 @@ function drawLogOdds(checkCol, tempMatrixType, probLoc, probX, probY){
     }
   
   // Indexes into scoring matrix and prints result
-  
     logOdds = tempMat[tempInd1][tempInd2];
   }
   
   ctx.fillStyle = '#000000';
-  
-  if(probLoc == 1){
-    ctx.fillText("LO: " + logOdds, myCanvasProt.width - 110, 20);
-    ctx.fillText("SUB: " + tempAA1 + " --> " + tempAA2, myCanvasProt.width - 110, 50); 
+ 
+  if(logOdds != "undef"){
+    
+    logOdds = Math.round(logOdds*100)/100
+    
   }
   
-  if(probLoc == 2){
+  // Draw detail information in top right corner (only if valid)
+  if(probLoc == 1 && dne == false){
+    ctx.fillText("VAL: " + logOdds, myCanvasProt.width - 110, 20);
+    ctx.fillText("SUB: " + tempAA1 + " --> " + tempAA2, myCanvasProt.width - 110, 50); 
+    ctx.font = "12px Arial";
+    ctx.fillText("Gap: ", 10, 20);
+    ctx.fillText("Ext: ", 10, 40);
+    ctx.fillText("Scope: ", 10, 60);
+
+    ctx.fillText(alignments[alignIndex+GAP_SLOT], 50, 20);   // gap penalty
+    ctx.fillText(alignments[alignIndex+EXT_SLOT], 50, 40);   // ext. penalty
+    ctx.fillText(paramsList[0], 50, 60);   // scoring scheme
+  }
+  
+  // Draw detail information along each alignment pair (only if valid)
+  if(probLoc == 2 && dne == false){
     ctx.font = "12px Arial";
     ctx.fillText(logOdds + "  ( " + tempAA1 + " --> " + tempAA2 + " ) ", probX, probY);
-  }  
+  } 
+  
 }
 
 
@@ -1150,7 +1211,7 @@ function getColContains(cA, tS){
  * *********************************************************/
 function drawColAlpha(cA, tempMatrixType){
   
-  var xTemp = 300;
+  var xTemp = 275;
   var yTemp = TOP_MARGIN * 3;
   var totalCount = 0;
   
@@ -1179,14 +1240,14 @@ function drawColAlpha(cA, tempMatrixType){
     ctx.beginPath();
     ctx.moveTo(xTemp, yTemp - 20);
     ctx.lineTo(xTemp, 
-               yTemp - (20 + Math.floor((TOP_MARGIN * 0.75) * 3 
+               yTemp - (20 + Math.floor((TOP_MARGIN * 0.5) * 3 
                * cA[i].c / (totalCount * 1.0))));
                
-    ctx.lineTo(xTemp + RECT_WIDTH, 
-               yTemp - (20 + Math.floor((TOP_MARGIN * 0.75) * 3 
+    ctx.lineTo(xTemp + RECT_WIDTH_LR, 
+               yTemp - (20 + Math.floor((TOP_MARGIN * 0.5) * 3 
                * cA[i].c / (totalCount * 1.0))));
                
-    ctx.lineTo(xTemp + RECT_WIDTH, yTemp - 20);
+    ctx.lineTo(xTemp + RECT_WIDTH_LR, yTemp - 20);
     ctx.lineTo(xTemp, yTemp - 20);
     ctx.fill();
     ctx.closePath();
@@ -1194,7 +1255,7 @@ function drawColAlpha(cA, tempMatrixType){
     ctx.fillStyle = '#000000';
     ctx.fillText(cA[i].s + ": " + cA[i].c, xTemp, yTemp);
     
-    xTemp = xTemp + 40;
+    xTemp = xTemp + 35;
   }
   
 }
@@ -1222,20 +1283,9 @@ function drawTypeTitle(t){
     fillString = "Subject: ";
     i = 2;
   }
-  
-  
+ 
   ctx.fillStyle = '#000000';
   ctx.font = "12px Arial";
-  
-  ctx.fillText("Gap: ", 10, 20);         
-  ctx.fillText("Ext: ", 10, 40);         
-  ctx.fillText("Scope: ", 10, 60);       
-    
-  ctx.fillText(paramsList[0], 50, 20);   // display gap penalty
-  ctx.fillText(paramsList[1], 50, 40);   // display ext. penalty
-  ctx.fillText(paramsList[2], 50, 60);   // display scoring scheme
-  
-
   ctx.fillText(fillString, 10, curY);    // pattern or subject
   ctx.fillText(metaList[i], 75, curY);   // fasta meta data 
   
@@ -1268,7 +1318,7 @@ function drawProtAlignment(alignToMatch, singleAlign, startList, endList, tempMa
       getColor(singleAlign[i], i, singleAlign.length, tempMatrixType);
 
       drawBorderAndFill(singleAlign[i], i, tempMatrixType);
-  
+
     } 
     
   }
@@ -1541,7 +1591,7 @@ function drawLabels(alignLabel, score){
   ctx.font = "15px Arial";
   ctx.fillText(getMatrixString(alignLabel, 1),5,curY + SPACE_Y);
   ctx.font = "12px Arial";
-  ctx.fillText(Math.floor(score), 5, curY + RECT_HEIGHT/2 + SPACE_Y*3);
+  ctx.fillText(Math.round(score), 5, curY + RECT_HEIGHT/2 + SPACE_Y*3);
   subCrdStore.push(curY + RECT_HEIGHT/2 + SPACE_Y*3 + 15);
 
 }
@@ -1558,7 +1608,7 @@ function drawLegend(){
   
   var canvasStart  = 10;   // bottom border for legend
   var legendSize   = 15;   // canvas space allocated for one amino acid 
-  var leftLegendSt = 250;  // left border for legend
+  var leftLegendSt = 275;  // left border for legend
 
   for(var i = 0; i < aList.length; i++){
     

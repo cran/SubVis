@@ -854,7 +854,7 @@ function getLogOdds(col, tempMatrixType){
  * *********************************************************/
 function getMatrixString(alignLabel, type){
   
-  var matStFull     = null;
+  var matStFull     = null;  
   var matStAbbr     = null;
   var returnMat     = null;
   var returnStrName = null;
@@ -920,11 +920,13 @@ function getMatrixString(alignLabel, type){
       returnMat     = P250;
       returnStrName = nameP250;
       break;
-    case "-1":
-      matStFull     = "CUST";
-      matStAbbr     = "CUST";
-      returnMat     = CUST;
-      returnStrName = nameCUST;
+    default:   // Used for custom matrices
+               // Index into the custom array with alignLabel 
+               // Plus one is used to pass cases 1-10
+      matStFull     = "CM" + (parseInt(alignLabel) - MAX_CHECKED_PLUS_ONE).toString();
+      matStAbbr     = "CM" + (parseInt(alignLabel) - MAX_CHECKED_PLUS_ONE).toString();
+      returnMat     = CUST[parseInt(alignLabel) - MAX_CHECKED_PLUS_ONE];
+      returnStrName = nameCUST[parseInt(alignLabel) - MAX_CHECKED_PLUS_ONE];
       break;
   }
   

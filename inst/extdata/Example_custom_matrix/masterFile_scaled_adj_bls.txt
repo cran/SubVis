@@ -1,0 +1,3 @@
+scaled_adj_BLSM.txt -10 -1
+scaled_adj_BLSM.txt -14 -4
+BLS.txt -14 -4

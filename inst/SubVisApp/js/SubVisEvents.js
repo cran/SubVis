@@ -67,9 +67,25 @@ $(document).ready(function() {
    * 
    * *****************************************************/
   function onMouseOverProt(event){
+  
+    // Browser compatibility
+    
+    if (event === false){
+      event = window.event;
+    }
+    
+    if(event.x || event.y){
+      mouseX = Math.floor(event.clientX - myCanvasProt.getBoundingClientRect().left);
+      mouseY = Math.floor(event.clientY - myCanvasProt.getBoundingClientRect().top);
+    }
+    
+    else if(event.pageX || event.pageY){
+      mouseX = Math.floor((event.pageX - myCanvasProt.getBoundingClientRect().left)
+              - (document.body.scrollLeft + document.documentElement.scrollLeft));
+      mouseY = Math.floor((event.pageY - myCanvasProt.getBoundingClientRect().top)
+              - (document.body.scrollTop + document.documentElement.scrollTop));
+    }
 
-    mouseX = Math.floor(event.x - myCanvasProt.getBoundingClientRect().left);
-    mouseY = Math.floor(event.y - myCanvasProt.getBoundingClientRect().top);
     clearCanvas();
     chooseDraw();
     
@@ -193,7 +209,7 @@ $(document).ready(function() {
   
     function(pos){
   
-      if(pos.length != 0){
+      if(pos.length !== 0){
             
         goTo = parseInt(pos);
           
@@ -304,10 +320,12 @@ $(document).ready(function() {
     function(x){
         
       var y = x;
-      RECT_WIDTH--;
-      RECT_HEIGHT--;
-      clearCanvas();
-      chooseDraw();
+      if(RECT_WIDTH > RECT_WIDTH_LR && RECT_HEIGHT > RECT_HEIGHT_LR){
+        RECT_WIDTH--;
+        RECT_HEIGHT--;
+        clearCanvas();
+        chooseDraw();
+      }
       
     }
         
@@ -595,7 +613,7 @@ $(document).ready(function() {
           
         }
         
-        if(pO == "detail"){
+        if(pO == "detail" || pO == "search"){
           
           overviewOn = false;        
           
@@ -959,7 +977,7 @@ $(document).ready(function() {
     /********************************************************
     * Name: LoadCust
     * 
-    * Loads custom matrix as 2d array from 1d list
+    * Loads custom matrices as 2d array from 1d list
     * 
     *  @param: Cust-->custom matrix (1d list)
     * 
@@ -968,7 +986,7 @@ $(document).ready(function() {
   
     function(Cust){
 
-     CUST      = [];
+     var mt    = [];
      var temp  = [];
      var cnt   = 0;
      
@@ -979,14 +997,16 @@ $(document).ready(function() {
         
         if(cnt == Math.sqrt(Cust.length)){
           
-          CUST.push(temp);
+          mt.push(temp);
           temp = [];
           cnt = 0;
           
         }
         
      }
-            
+     
+     CUST.push(mt);
+
     }
   );
 
@@ -1174,7 +1194,7 @@ $(document).ready(function() {
     /********************************************************
     * Name: LoadCustNames
     * 
-    * Loads custom alphabet
+    * Loads alphabet of custom matrices
     * 
     *  @param: name_CUST-->1d alphabet list
     * 
@@ -1183,13 +1203,12 @@ $(document).ready(function() {
     
     function(name_CUST){
     
-      nameCUST = name_CUST;
+      nameCUST.push(name_CUST);
   
     }
 
   );
   
-
   }
 );
 </script>
