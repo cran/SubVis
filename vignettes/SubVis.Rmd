@@ -36,7 +36,7 @@ vignette: >
 
 ###   <a id="abt"></a>About:
 
-      Subvis version 2.0.0
+      SubVis version 2.0.1
       Scott Barlowe, Heather Coan, and Robert Youker
       Western Carolina University
       Uses: R (>= 3.3.0), JavaScript
@@ -66,16 +66,19 @@ vignette: >
             (gpr12.fasta, gpr6.fasta)
             (Human.fasta, Xenla.fasta)
             (fNucl.fasta, pFalc.fasta)
+            
       2.  A custom matrix developed by Rios et al. (gpcrtm.txt)
           A scaled and scaled adjusted matrix reported by 
             Yu and Altschul (scaled_BLSM.txt, scaled_adj_BLSM.txt)
           The DISORDER matrix proposed by Radivojac et al. 
-            (disorder.txt)
+            (disorder_mat.txt)
+            
       3.  BLOSUM62 matrix used for varying penalties (BLS.txt)
+      
       4.  Three custom master files (masterFile_gpcrtm.txt, 
-          masterFile_scaled_adj_bls.txt, and falcNuc.txt) listing 
-          the file names of custom matrices and their associated 
-          gap and extension costs
+            masterFile_scaled_adj_bls.txt, and masterFile_disorder.txt) 
+            listing the file names of custom matrices and their associated 
+            gap and extension costs
 
 ###   <a id="start"></a>Getting Started: 
 
@@ -91,7 +94,7 @@ vignette: >
   
       3.  Install and load SubVis package
   
-      4.  Launch the SubVis at the RStudio prompt with
+      4.  Launch SubVis at the RStudio prompt with
     
             '> SubVis::startSubVis()'
           
@@ -99,181 +102,184 @@ vignette: >
               AND USING CUSTOM MATRICES REQUIRES READ/WRITE
               PERMISSIONS IN THE SUBVIS INSTALLATION DIRECTORY
 
-###   Main tabs:  Options, Viz, and Help:
+###   Main Tabs:  Options, VIZ, and Help
 
-      After launching, there are three tabs:  Options, Viz, and 
+      After launching, there are three tabs:  Options, VIZ, and 
                                               Help
 
-###   <a id="options"></a>Options tab: Loading data, matrices, and parameters:
+###   <a id="options"></a>Options Tab: Loading Data, Matrices, and Parameters
 
-      The Options tab includes the following:
+      The Options tab includes the following features/requirements:
       
       1.  Protein sequences (one per file) must be in FASTA 
-          format.  There are two example FASTA files in the 
-          test folder.
+            format.  There are three sets of example FASTA files 
+            in the extdata/Example_FASTA_files folder.
         
       2.  Sequences can be loaded by either entering the text
-          (including by copy/pasting) or by file selection.  
-          In the case of text entry, text files with the fasta
-          sequences are created in the extdata/Example_FASTA_files 
-          directory located in the SubVis install directory.  
-          These files can be saved for future use.
+            (including by copy/paste) or by file selection.  
+            In the case of text entry, text files with the FASTA
+            sequences are created in the extdata/Example_FASTA_files 
+            directory located in the SubVis installation directory.  
+            These files can be saved for future use.
           
-          NOTE:   ENTERING SEQUENCE TEXT (INSTEAD OF FILE UPLOAD) 
-                  REQUIRES READ/WRITE PERMISSIONS IN THE SUBVIS 
-                  INSTALLATION DIRECTORY
+      NOTE:   ENTERING SEQUENCE TEXT (INSTEAD OF FILE UPLOAD) 
+              REQUIRES READ/WRITE PERMISSIONS IN THE SUBVIS 
+              INSTALLATION DIRECTORY
         
       3.  An error message will be generated if
             a.  Either textbox or file selection is empty
-            b.  Spaces are in the sequences
+            b.  Spaces (other than newlines) are in the sequences
             c.  The header and sequences of both are identical
             d.  The sequences are identical
     
-      2.  BLOSUM and PAM matrices can be selected by checking 
-          the appropriate box.  Gaps and extension costs can be
-          changed with the associated text boxes.
+      4.  BLOSUM and PAM matrices can be selected by checking 
+            the appropriate box.  Gaps and extension costs can be
+            changed with the associated text boxes.
         
-          An error message will be generated if
-            a.  The gap entry is empty or is not a number.
-            b.  The extension entry is empty or is not a number, 
+            An error message will be generated if
+              a.  The gap entry is empty or is not a number
+              b.  The extension entry is empty or is not a number 
                
-      3.  A custom matrix in the form of the 
-          predefined matrices can be loaded from 
-          a text file.  The basic form is 
+      5.  Multiple custom matrices in the form of the 
+            predefined matrices can be loaded from 
+            text files.  The basic form is 
       
             First row --> Characters representing lookup
-                            table.
+                            table
             First col --> Transpose of first row starting
-                            at row 2
-            All other entries (intersection of amino acids)
-                            are substitution values
-
-                A    B   C   D   E   F . . .
+                            at the second row
+                            
+                            A    B   C   D   E   F . . .
             A   
             B
             C
-            D
+            D         
             E
             F
             ...
+            
+            All other entries (intersection of amino acids)
+                            are substitution values
+
+            Custom matrices are loaded by selecting a master file.
+            This file lists the filenames of the custom matrices.  
+            Both files should be located in the  
+            extdata/Example_custom_matrix folder located in the 
+            SubVis installation directory.  The format is:
         
-          Custom matrices are loaded by selecting a master file.
-          This file lists the names of the files that contain 
-          the custom matrices.  Both files should be located in 
-          extdata/Example_custom_matrix located in the SubVis
-          installation directory.  The format is:
-        
-          custom_matrix_name0 gap_cost0 extension_cost0
-          custom_matrix_name1 gap_cost1 extension_cost1
-          custom_matrix_name2 gap_cost2 extension_cost2
+              custom_matrix_name0 gap_cost0 extension_cost0
+              custom_matrix_name1 gap_cost1 extension_cost1
+              custom_matrix_name2 gap_cost2 extension_cost2
           
-                    ...and so on...
+                          ...and so on...
         
-          Spaces separate the custom matrix name, gap cost, and 
-          extension cost for each matrix.  EACH LINE MUST END 
-          WITH A NEWLINE CHARACTER TO AVOID ERRORS/WARNINGS.  
-          THIS INCLUDES THE LAST LINE LISTING A CUSTOM MATRIX.
+            Spaces separate the custom matrix name, gap cost, and 
+            extension cost for each matrix.  
+            
+            EACH LINE MUST END WITH A NEWLINE CHARACTER TO AVOID 
+            ERRORS/WARNINGS.  THIS INCLUDES THE LAST LINE LISTING 
+            A CUSTOM MATRIX.  THERE MUST BE A SINGLE BLANK LINE
+            AFTER THE LAST ENTRY.
         
-          In the display, the custom matrix is labeled "CM" 
-          followed by the order in which they are listed in the 
-          custom matrix master file (For example, CM0, CM1, etc.)
+            In the display, the custom matrix is labeled "CM" 
+            followed by the number associated with its place in 
+            the order matrices are listed in the custom matrix 
+            master file (for example, CM0, CM1, etc.).
         
-          An error message will be generated if
-            a.  The custom matrix radio box is set to "ON" and the 
+            An error message will be generated if
+            a.  The custom matrix radio button is set to "ON" and the 
                 file selection is empty
             b.  The format of the custom matrix is not acceptable 
             
-          NOTE:   USING CUSTOM MATRICES REQUIRES READ/WRITE
-                  PERMISSIONS IN THE SUBVIS INSTALLATION DIRECTORY
+      NOTE:   USING CUSTOM MATRICES REQUIRES READ/WRITE
+              PERMISSIONS IN THE SUBVIS INSTALLATION DIRECTORY
     
-      4.  The score type can be selected by text boxes and a drop-down 
-          menu
+      6.  The score type can be selected with the drop-down menu
         
-      5.  After all parameters are entered, clicking the "GO" button 
-          located under the "PERFORM ALIGNMENT" label will changed 
-          the view to the Overview visualization
+      7.  After all parameters are entered, clicking the "GO" button 
+            located under the "PERFORM ALIGNMENT" label will change 
+            the view to the Overview visualization
 
-      Note: Each time a change in the options tab is made, 
-            the GO button (in the Overview or detail view) 
-            must be clicked
+      Note: Each time a change in the Options tab is made, 
+            the "GO" button must be clicked
     
-###   Viz tab: Overview, Detail view, and Search:
+###   VIZ Tab: Overview, Detail View, and Search View
 
       There are three options that can be selected with a drop-down 
-      box:  Overview, Detail view, and Search
+        menu:  Overview, Detail view, and Search view
 
 ###   <a id="over"></a>Overview:
 
       Each row (except the last) represents a percent identity 
-      type.  Within each row, the pid for the selected matrices 
-      are sorted.  The last row is the sorted overall score.  
+        type.  Within each row, the PID for the selected matrices 
+        are sorted.  The last row is the sorted overall score.  
     
       All PID colors are normalized together.  The score colors 
-      are normalized separate from the PIDs.  A legend in the 
-      bottom left shows the color scheme along with the minimum 
-      and maximum values for the PID and score.
+        are normalized separate from the PIDs.  A legend in the 
+        bottom left shows the color scheme along with the minimum 
+        and maximum values for the PID and score.
       
     
       Interaction:  Mouse move
     
       1.  When the mouse moves over a matrix type, the 
-          corresponding matrix in the other rows are identified.  
-          At the same time, the corresponding detail information 
-          (matrix type, percent identity, and score) are shown 
-          in the bottom right.
+            corresponding matrix in the other rows are identified.  
+            At the same time, detail information for the selected 
+            matrix (matrix type, percent identity, and score) are 
+            shown in the bottom right.  When the mouse moves over
+            the overall score, PID 4 for the selected matrix is
+            shown.
 
 
       Interaction:  Size
     
-      1.  '+' enlarges the display and '-' shrinks the 
-          display
+      1.  '+' enlarges the displayed items and '-' shrinks the 
+            displayed items
 
 ###   <a id="detail"></a>Detail View:
 
-      Score is located under the matrix type for each alignment 
-      pair along the left side.  Amino acids are represented by 
-      a color-coded box.
+      The overall score is located under the matrix type for each 
+        alignment pair along the left side.  Amino acids are represented 
+        by a color-coded box.
       
 
       Interaction:  Size
   
-      1.  '+' enlarges the display
+      1.  '+' enlarges the displayed items
     
-      2.  '-' shrinks the display
+      2.  '-' shrinks the displayed items
 
       
       Interaction:  Mouse over an amino acid
   
-      1.  Histogram showing the number of each amino acid in that 
-          column
+      1.  A histogram displays the number of each amino acid in that 
+            column
     
-      2.  Log-odds score (or any substitution value entered 
-          into a custom matrix) and the amino acid substitution 
-          displayed under the score for each alignment
+      2.  The log-odds score (or any substitution value entered 
+            into a custom matrix) and the amino acid substitution 
+            are displayed under the score for each alignment
     
-      3.  Amino acid, log-odds score (or any substitution value 
-          entered into a custom matrix), and the amino acid 
-          subsitution is shown in the top right
+      3.  The amino acid, log-odds score (or any substitution value 
+            entered into a custom matrix), and the amino acid 
+            substitution are shown in the top right
       
       4.  The gap and extension costs for the selected amino acid 
-          (under the mouse) is shown in the top left
+            (under the mouse) are shown in the top left
 
       
       Interaction: Classification
   
-      1.  Classify amino acids according to [1] and whether an 
-          amino acid substitution is conserved (log-odds > 0)
-          or not (log-odds < 0).  Conservation classification
-          may not apply depending on substitution value entered
-          into custom matrix.
+      1.  Amino acids can be classified according to [1] and whether 
+            an amino acid substitution is conserved (log-odds > 0)
+            or not (log-odds < 0)
 
       
       Interaction:  Amino Acid Representation
       
-      1.  'Alpha On/Off' - Show amino acid instead of boxes
+      1.  'Alpha On/Off' - Shows amino acid abbreviation instead of boxes
 
       
-      Interaction: Nagivation
+      Interaction: Navigation
   
       1.  'S' - Go to position 1
   
@@ -297,12 +303,12 @@ vignette: >
   
       9.  'Subj' - Show only the subject for each matrix type
       
-###   <a id="srch"></a>Search:
+###   <a id="srch"></a>Search View:
 
       Interaction: POS  (Requires clicking 'GO')
     
-      1.  Go to a position by entering column in text box 
-          (Requires clicking 'Go')
+      1.  Go to a position by entering the column number in text 
+            box (Requires clicking 'Go')
  
       
       Interaction: Search (All require clicking 'Go')
@@ -319,7 +325,7 @@ vignette: >
 ###   <a id="error"></a>Error Messages:
 
       Error messages are generated in the following scenarios 
-      under on the top left of the VIZ tab
+        in the top left of the VIZ tab
 
       1.  'ERROR: No Sequence Text':
               
@@ -330,14 +336,14 @@ vignette: >
               Generated if either sequence file selection is 
               empty
               
-      3.  'ERROR: Identical Pattern and Subject:  
+      3.  'ERROR: Identical Pattern and Subject':  
               
               Generated if the two sequence inputs (header 
               information and sequences) are identical
       
       4.  'ERROR: Identical Sequences':
               
-              Generated if the two sequences inputs (sequences 
+              Generated if the two sequence inputs (sequences 
               only) are the same
       
       5.  'ERROR: Non-Custom Gap':
@@ -356,7 +362,7 @@ vignette: >
               Could indicate, among other possibilities, a 
               poorly constructed sequence not indicated by 
               another error message or a poorly constructed 
-              custom matrix.
+              custom matrix/custom matrix master file.
       
       8.  'ERROR: No Custom Matrix Selected': 
       
@@ -377,8 +383,8 @@ vignette: >
 ###   <a id="note"></a>Notes:
 
       1.  Log-odds score (or any substitution value entered 
-          into a custom matrix) for pairs involving a gap are
-          reported as undefined
+            into a custom matrix) for pairs involving a gap are
+            reported as undefined
 
 ###   <a id="ref"></a>References:
 

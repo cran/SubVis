@@ -1,0 +1,6 @@
+disorder_mat.txt -3.2 -0.1
+disorder_mat.txt -10 -0.6
+disorder_mat.txt -7.5 -0.9
+BLS.txt -3.2 -0.1
+BLS.txt -10 -0.6
+BLS.txt -7.5 -0.9
