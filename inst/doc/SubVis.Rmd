@@ -36,7 +36,7 @@ vignette: >
 
 ###   <a id="abt"></a>About:
 
-      SubVis version 2.0.1
+      SubVis version 2.0.2
       Scott Barlowe, Heather Coan, and Robert Youker
       Western Carolina University
       Uses: R (>= 3.3.0), JavaScript
@@ -212,7 +212,19 @@ vignette: >
 
       Each row (except the last) represents a percent identity 
         type.  Within each row, the PID for the selected matrices 
-        are sorted.  The last row is the sorted overall score.  
+        are sorted.  The last row is the sorted overall score. 
+        
+        PID types include the following variances in denominator
+          calculations as investigated by May and by Raghava
+          and Barton:
+        
+        PID 1 - Denominator should be defined as aligned positions
+                  plus internal gap positions.
+        PID 2 - Denominator should be defined as aligned positions.
+        PID 3 - Denominator should be defined as the length of the shorter     
+                  sequence.
+        PID 4 - Denominator should be defined as the average of the two 
+                  sequences.
     
       All PID colors are normalized together.  The score colors 
         are normalized separate from the PIDs.  A legend in the 
@@ -427,3 +439,10 @@ vignette: >
           Improving sequence alignments for intrinsically disordered
           proteins.  Pacific Symposium on Biocomputing 7:589-600.
           (2002)
+          
+      9.  May, A.: Percent sequence identity; the need to be explicit.   
+          Structure, 12(17).  (2004)
+          
+     10.  Raghava, G. and Barton, G.: Quantification of the variation in 
+          percentage identity for protein sequence alignments. BMC 
+          Bioinformatics, 7(415).  (2006)

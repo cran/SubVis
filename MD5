@@ -1,4 +1,4 @@
-f14e1a60c73dc8398644c583c619bb2a *DESCRIPTION
+f2e0ed682022433fd6634b9b6299f7e3 *DESCRIPTION
 f456588f66650d1861ba24c6b340b4d1 *NAMESPACE
 1fad7da3a9465aed654bcb5847369371 *R/startSubVis.R
 760a400872436a1a5f643e0c91059ec3 *build/vignette.rds
@@ -9,8 +9,8 @@ ff52cef4f9c970add1bf96b384738b14 *inst/SubVisApp/js/SubVisDraw.js
 55d044af0727a1cf9c866b7684d8f1e2 *inst/SubVisApp/js/SubVisGlobals.js
 67561135e235a3178a93f138594383d5 *inst/SubVisApp/server.R
 58ef8d0425719bfb4ec5af18c521011b *inst/SubVisApp/ui.R
-26126e87812192d8df3cc939248ae734 *inst/doc/SubVis.Rmd
-18968fb96ef2b1d1f2cd4ad3ce02f648 *inst/doc/SubVis.html
+8cde5beee0557fc7924923e5fa578dcf *inst/doc/SubVis.Rmd
+376e18efb2bdf48536825b8c5b20b82f *inst/doc/SubVis.html
 56684c3ca59be7b47478253d4cd856f4 *inst/extdata/Example_FASTA_files/Human.fasta
 bb3231f302bde7df30b26dc0c115c95c *inst/extdata/Example_FASTA_files/Xenla.fasta
 304890b5310fd26dd0ef764dfb7c9c23 *inst/extdata/Example_FASTA_files/fNucl.fasta
@@ -26,4 +26,4 @@ aba54e7c94f084e59c79b6e5f194a59f *inst/extdata/Example_custom_matrix/disorder_ma
 95ec9c83592133bf7ecac484ac9d6d6c *inst/extdata/Example_custom_matrix/scaled_BLSM.txt
 701873bad431959672428752d093fd72 *inst/extdata/Example_custom_matrix/scaled_adj_BLSM.txt
 d8c1086f2faea0169d26543c795d9b11 *man/startSubVis.Rd
-26126e87812192d8df3cc939248ae734 *vignettes/SubVis.Rmd
+8cde5beee0557fc7924923e5fa578dcf *vignettes/SubVis.Rmd

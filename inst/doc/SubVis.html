@@ -5,7 +5,7 @@
 
 <h1 class="title toc-ignore">SubVis</h1>
 <h4 class="author"><em>Scott Barlowe, Heather Coan, and Robert Youker</em></h4>
-<h4 class="date"><em>2017-01-09</em></h4>
+<h4 class="date"><em>2017-05-08</em></h4>
 
 
 
@@ -24,7 +24,7 @@
 <p><a href="#ref">References</a></p>
 <div id="about" class="section level3">
 <h3><a id="abt"></a>About:</h3>
-<pre><code>  SubVis version 2.0.1
+<pre><code>  SubVis version 2.0.2
   Scott Barlowe, Heather Coan, and Robert Youker
   Western Carolina University
   Uses: R (&gt;= 3.3.0), JavaScript
@@ -200,7 +200,19 @@
 <h3><a id="over"></a>Overview:</h3>
 <pre><code>  Each row (except the last) represents a percent identity 
     type.  Within each row, the PID for the selected matrices 
-    are sorted.  The last row is the sorted overall score.  
+    are sorted.  The last row is the sorted overall score. 
+    
+    PID types include the following variances in denominator
+      calculations as investigated by May and by Raghava
+      and Barton:
+    
+    PID 1 - Denominator should be defined as aligned positions
+              plus internal gap positions.
+    PID 2 - Denominator should be defined as aligned positions.
+    PID 3 - Denominator should be defined as the length of the shorter     
+              sequence.
+    PID 4 - Denominator should be defined as the average of the two 
+              sequences.
 
   All PID colors are normalized together.  The score colors 
     are normalized separate from the PIDs.  A legend in the 
@@ -415,19 +427,15 @@
   8.  Radivojac, P., Obradovic, Z., Brown, C.J., Dunker, A.K.:
       Improving sequence alignments for intrinsically disordered
       proteins.  Pacific Symposium on Biocomputing 7:589-600.
-      (2002)</code></pre>
+      (2002)
+      
+  9.  May, A.: Percent sequence identity; the need to be explicit.   
+      Structure, 12(17).  (2004)
+      
+ 10.  Raghava, G. and Barton, G.: Quantification of the variation in 
+      percentage identity for protein sequence alignments. BMC 
+      Bioinformatics, 7(415).  (2006)</code></pre>
 </div>
 
-
-
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
-  (function () {
-    var script = document.createElement("script");
-    script.type = "text/javascript";
-    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
-    document.getElementsByTagName("head")[0].appendChild(script);
-  })();
-</script>
-
 </body>
+
